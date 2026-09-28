@@ -577,6 +577,7 @@ private class RequestBuilderFixture(
         every { settings.ttsRefAudioUrl } returns MutableStateFlow("")
         every { settings.ttsLanguage } returns MutableStateFlow(DEFAULT_TTS_LANGUAGE)
         every { settings.ttsSpeed } returns MutableStateFlow(DEFAULT_TTS_SPEED)
+        every { settings.ttsSpeakPrompt } returns MutableStateFlow("")
         every { settings.automationToolsEnabled } returns MutableStateFlow(true)
         every { settings.shellDevices } returns MutableStateFlow(emptyList())
         every { settings.sandboxEnabled } returns MutableStateFlow(true)

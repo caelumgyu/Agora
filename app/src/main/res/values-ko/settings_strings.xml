@@ -73,6 +73,8 @@
     <string name="tts_voice_upload_ok">"%1$s" 음성을 업로드했습니다</string>
     <string name="tts_voice_upload_failed">업로드 실패: %1$s</string>
     <string name="tts_voice_upload_clone_note">복제 음성은 Qwen3-TTS-VC 모델에 연결되며 모델 설정이 자동으로 전환됩니다. 생성한 음성마다 DashScope 요금이 부과됩니다.</string>
+    <string name="tts_speak_prompt">읽기 프롬프트</string>
+    <string name="tts_speak_prompt_desc">모델의 읽기 도구 지침. 어조 요구 사항(emotion은 중국어만)은 자동으로 추가됩니다.</string>
     <string name="tts_enable_desc">IndexTTS 호환 서버에 연결(예: vLLM-Omni의 IndexTTS 2.5)하고 텍스트를 소리 내어 읽기</string>
     <string name="tts_server">서버</string>
     <string name="tts_base_url">서버 URL</string>

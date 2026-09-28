@@ -107,6 +107,19 @@ internal const val DEFAULT_TTS_SPEED = 1.0f
 /** Model id served by the vLLM-Omni IndexTTS-2.5 deployment (overridable in settings). */
 internal const val DEFAULT_TTS_MODEL_NAME = "IndexTeam/IndexTTS-2.5"
 
+/**
+ * Built-in description for the `speak` tool. Users may override it in TTS settings; the tone
+ * guidance (including the Chinese-only `emotion` requirement) is appended by the tool itself
+ * whenever the selected transport supports it.
+ */
+internal const val DEFAULT_TTS_SPEAK_PROMPT =
+    "Read a message aloud to the user through text-to-speech. The audio plays immediately; " +
+        "never repeat this call just to show the text and never embed raw audio data. " +
+        "Write the exact words to speak yourself in `text` — they may differ from the written " +
+        "answer. Keep them short, natural and speech-friendly: plain sentences only, no " +
+        "Markdown, lists, code, URLs or emoji. Use it when the user asks you to speak or read " +
+        "something aloud, or when a spoken reply clearly fits the conversation."
+
 internal fun normalizeTtsLanguage(language: String?): String =
     language?.trim()?.lowercase()?.takeIf(TTS_LANGUAGES::contains) ?: DEFAULT_TTS_LANGUAGE
 

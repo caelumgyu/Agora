@@ -12,6 +12,7 @@ import com.newoether.agora.api.tts.TtsProviders
 import com.newoether.agora.api.tts.TtsRequest
 import com.newoether.agora.api.tts.TtsServerConfig
 import com.newoether.agora.data.DEFAULT_TTS_MODEL_NAME
+import com.newoether.agora.data.DEFAULT_TTS_SPEAK_PROMPT
 import com.newoether.agora.util.DebugLog
 import com.newoether.agora.viewmodel.GenerationContext
 import kotlinx.coroutines.CancellationException
@@ -58,22 +59,20 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
                 TtsProviderKind.OPENAI_SPEECH -> DEFAULT_TTS_MODEL_NAME
             }
 
-        internal fun definition(emotionSupported: Boolean): ToolDefinition {
+        /** The user-editable tool description, falling back to the built-in prompt. */
+        internal fun promptFor(ctx: GenerationContext): String =
+            ctx.ttsSpeakPrompt.ifBlank { DEFAULT_TTS_SPEAK_PROMPT }
+
+        internal fun definition(prompt: String, emotionSupported: Boolean): ToolDefinition {
             val description = buildString {
-                append(
-                    "Read a message aloud to the user through text-to-speech. The audio plays immediately; " +
-                        "never repeat this call just to show the text and never embed raw audio data. " +
-                        "Write the exact words to speak yourself in `text` — they may differ from the written " +
-                        "answer. Keep them short, natural and speech-friendly: plain sentences only, no " +
-                        "Markdown, lists, code, URLs or emoji. Use it when the user asks you to speak or read " +
-                        "something aloud, or when a spoken reply clearly fits the conversation.",
-                )
+                append(prompt)
                 if (emotionSupported) {
                     append(
-                        " When the tone matters, set `emotion` to a short description (for example 开心, " +
-                            "疲惫, 兴奋地) or \"auto\" to let the server infer it from the text. A reply may " +
-                            "mix sentences with different tone: call this tool once per sentence instead of " +
-                            "merging them into one line.",
+                        " When the tone matters, set `emotion` to a short Chinese description (for " +
+                            "example 开心, 疲惫, 兴奋地) or \"auto\" to let the server infer it from the " +
+                            "text. The `emotion` value must be written in Chinese — the classifier does " +
+                            "not understand other languages. A reply may mix sentences with different " +
+                            "tone: call this tool once per sentence instead of merging them into one line.",
                     )
                 }
             }
@@ -122,7 +121,12 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
             // DashScope's Qwen-TTS has no text-based tone control; only offer the argument where
             // the OpenAI-compatible path can forward it (IndexTTS).
             val extendedControls = TtsProviders.kindFor(ctx.ttsBaseUrl) == TtsProviderKind.OPENAI_SPEECH
-            listOf(definition(emotionSupported = extendedControls))
+            listOf(
+                definition(
+                    prompt = promptFor(ctx),
+                    emotionSupported = extendedControls,
+                ),
+            )
         } else {
             emptyList()
         }

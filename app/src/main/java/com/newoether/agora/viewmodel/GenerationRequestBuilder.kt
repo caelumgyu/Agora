@@ -575,6 +575,7 @@ class GenerationRequestBuilder(
             ttsRefAudioUrl = settings.ttsRefAudioUrl.value,
             ttsLanguage = settings.ttsLanguage.value,
             ttsSpeed = settings.ttsSpeed.value,
+            ttsSpeakPrompt = settings.ttsSpeakPrompt.value,
             automationToolsEnabled = settings.automationToolsEnabled.value,
             shellEnabled = effectiveSettings.shellEnabled ?: settings.shellEnabled.value,
             shellDevices = settings.shellDevices.value,

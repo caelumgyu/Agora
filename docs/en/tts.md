@@ -28,6 +28,7 @@ Once enabled, Agora offers a `speak` tool to models that support tool calling. T
 - Auto-play only covers speech produced after you opened the conversation; old conversations stay silent until replayed.
 - A reply whose model never called `speak` is never read aloud — there is no "read the whole message" fallback.
 - When the tone matters, the model can pass `emotion` (a short description such as 开心 or 疲惫, or `auto`); IndexTTS servers honour it, DashScope ignores it. The speaking rate always comes from the settings slider.
+- The tone value must be written in **Chinese** — the classifier understands nothing else. That requirement and the "one call per sentence" note are appended automatically; the tool instructions themselves are editable under **Advanced → Speech prompt** (leave it blank to restore the built-in default).
 - A reply may mix several sentences: the model can call `speak` multiple times in one turn, each line with its own tone, and they play in order (the replay button replays the whole sequence).
 - A failed synthesis leaves no replay button; the error shows on the tool card as usual.
 - Speech uses the default voice, language and speed from the settings above.

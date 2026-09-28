@@ -148,15 +148,8 @@ class SettingsManager(private val context: Context) {
     val imageGenModel: Flow<String?> = context.dataStore.data.map { it[IMAGE_GEN_MODEL] }
     val imageGenSize: Flow<String> = context.dataStore.data.map { it[IMAGE_GEN_SIZE] ?: "1024x1024" }
 
-    // ── TTS (IndexTTS / OpenAI-compatible speech endpoint) ──────
-    val ttsEnabled: Flow<Boolean> = context.dataStore.data.map { it[TTS_ENABLED] ?: false }
-    val ttsBaseUrl: Flow<String> = context.dataStore.data.map { it[TTS_BASE_URL] ?: "" }
-    val ttsApiKey: Flow<String> = context.dataStore.data.map { pref -> com.newoether.agora.util.SecretCrypto.decrypt(pref[TTS_API_KEY] ?: "") }
-    val ttsModelName: Flow<String> = context.dataStore.data.map { it[TTS_MODEL_NAME] ?: "" }
-    val ttsVoiceName: Flow<String> = context.dataStore.data.map { it[TTS_VOICE_NAME] ?: "" }
-    val ttsRefAudioUrl: Flow<String> = context.dataStore.data.map { it[TTS_REF_AUDIO_URL] ?: "" }
-    val ttsLanguage: Flow<String> = context.dataStore.data.map { pref -> normalizeTtsLanguage(pref[TTS_LANGUAGE]) }
-    val ttsSpeed: Flow<Float> = context.dataStore.data.map { pref -> normalizeTtsSpeed(pref[TTS_SPEED]?.toFloatOrNull() ?: DEFAULT_TTS_SPEED) }
+    // ── TTS (IndexTTS / Qwen-TTS / OpenAI-compatible speech endpoints) ──────
+    internal val ttsPreferenceStore = SettingsTtsPreferenceStore(context.dataStore)
     val searchContextWindow: Flow<Int> = context.dataStore.data.map { it[SEARCH_CONTEXT_WINDOW] ?: 8 }
     val searchMatchLimit: Flow<Int> = context.dataStore.data.map { it[SEARCH_MATCH_LIMIT] ?: 10 }
     val ragThreshold: Flow<Float> = context.dataStore.data.map { it[RAG_THRESHOLD]?.toFloatOrNull() ?: 0.5f }
@@ -488,14 +481,6 @@ class SettingsManager(private val context: Context) {
     suspend fun saveImageGenSize(size: String) {
         context.dataStore.edit { it[IMAGE_GEN_SIZE] = size }
     }
-    suspend fun saveTtsEnabled(enabled: Boolean) { context.dataStore.edit { it[TTS_ENABLED] = enabled } }
-    suspend fun saveTtsBaseUrl(url: String) { context.dataStore.edit { it[TTS_BASE_URL] = url.trim() } }
-    suspend fun saveTtsApiKey(key: String) { context.dataStore.edit { prefs -> if (key.isBlank()) prefs.remove(TTS_API_KEY) else prefs[TTS_API_KEY] = com.newoether.agora.util.SecretCrypto.encrypt(key.trim()) } }
-    suspend fun saveTtsModelName(name: String) { context.dataStore.edit { it[TTS_MODEL_NAME] = name.trim() } }
-    suspend fun saveTtsVoiceName(name: String) { context.dataStore.edit { it[TTS_VOICE_NAME] = name.trim() } }
-    suspend fun saveTtsRefAudioUrl(url: String) { context.dataStore.edit { it[TTS_REF_AUDIO_URL] = url.trim() } }
-    suspend fun saveTtsLanguage(language: String) { context.dataStore.edit { it[TTS_LANGUAGE] = normalizeTtsLanguage(language) } }
-    suspend fun saveTtsSpeed(speed: Float) { context.dataStore.edit { it[TTS_SPEED] = normalizeTtsSpeed(speed).toString() } }
     suspend fun saveSearchMatchLimit(n: Int) {
         context.dataStore.edit { it[SEARCH_MATCH_LIMIT] = n }
     }

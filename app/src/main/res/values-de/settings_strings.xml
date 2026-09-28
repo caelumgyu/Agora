@@ -73,6 +73,8 @@
     <string name="tts_voice_upload_ok">Stimme „%1$s“ hochgeladen</string>
     <string name="tts_voice_upload_failed">Hochladen fehlgeschlagen: %1$s</string>
     <string name="tts_voice_upload_clone_note">Geklonte Stimmen sind an das Modell Qwen3-TTS-VC gebunden; die Modelleinstellung wechselt automatisch. DashScope berechnet jede erstellte Stimme.</string>
+    <string name="tts_speak_prompt">Vorlese-Prompt</string>
+    <string name="tts_speak_prompt_desc">Anweisungen für das Vorlese-Tool des Modells. Die Tonanforderungen (emotion nur auf Chinesisch) werden automatisch ergänzt.</string>
     <string name="tts_enable_desc">IndexTTS-kompatiblen Server verbinden, z. B. IndexTTS 2.5 über vLLM-Omni, und Texte vorlesen</string>
     <string name="tts_server">Server</string>
     <string name="tts_base_url">Server-URL</string>

@@ -74,6 +74,8 @@
     <string name="tts_voice_upload_ok">音色「%1$s」上傳成功</string>
     <string name="tts_voice_upload_failed">上傳失敗：%1$s</string>
     <string name="tts_voice_upload_clone_note">複製音色綁定到 Qwen3-TTS-VC 模型，模型設定會自動切換。百煉會依建立的每個音色計費。</string>
+    <string name="tts_speak_prompt">朗讀提示詞</string>
+    <string name="tts_speak_prompt_desc">指導模型何時朗讀、如何寫朗讀文字；語氣要求（emo_text 必須為中文）會自動附加。</string>
     <string name="tts_enable_desc">連接相容 IndexTTS 的伺服器（例如以 vLLM-Omni 部署的 IndexTTS 2.5），朗讀任意文本</string>
     <string name="tts_server">伺服器</string>
     <string name="tts_base_url">伺服器位址</string>

@@ -217,11 +217,13 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
     val refAudioUrl by settings.ttsRefAudioUrl.collectAsState()
     val language by settings.ttsLanguage.collectAsState()
     val speed by settings.ttsSpeed.collectAsState()
+    val speakPrompt by settings.ttsSpeakPrompt.collectAsState()
 
     var apiKeyText by remember { mutableStateOf(apiKey) }
     LaunchedEffect(apiKey) { if (apiKeyText != apiKey) apiKeyText = apiKey }
 
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var showSpeakPromptDialog by remember { mutableStateOf(false) }
     var testState by remember { mutableStateOf<TtsTestState>(TtsTestState.Idle) }
 
     val speedGate = remember {
@@ -597,10 +599,28 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
                             }
                         }
                     }))
+
+                    SettingsGroup(title = stringResource(R.string.advanced_title), items = listOf({
+                        PromptSettingItem(
+                            title = stringResource(R.string.tts_speak_prompt),
+                            description = stringResource(R.string.tts_speak_prompt_desc),
+                            prompt = speakPrompt,
+                            onClick = { showSpeakPromptDialog = true },
+                        )
+                    }))
                 }
             }
 
             if (showDocFab) { Spacer(modifier = Modifier.height(80.dp)) }
+    }
+
+    if (showSpeakPromptDialog) {
+        PromptEditDialog(
+            title = stringResource(R.string.tts_speak_prompt),
+            initialPrompt = speakPrompt,
+            onDismiss = { showSpeakPromptDialog = false },
+            onSave = { settings.setTtsSpeakPrompt(it) },
+        )
     }
 
     if (showLanguageDialog) {

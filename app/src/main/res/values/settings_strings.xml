@@ -74,6 +74,8 @@
     <string name="tts_voice_upload_ok">Voice "%1$s" uploaded</string>
     <string name="tts_voice_upload_failed">Upload failed: %1$s</string>
     <string name="tts_voice_upload_clone_note">Cloned voices are bound to the Qwen3-TTS-VC model; the model setting switches automatically. DashScope bills each created voice.</string>
+    <string name="tts_speak_prompt">Speech prompt</string>
+    <string name="tts_speak_prompt_desc">Instructions for the model\'s speak tool. Tone requirements (emotion must be Chinese) are appended automatically.</string>
     <string name="tts_enable_desc">Connect an IndexTTS-compatible server, e.g. IndexTTS 2.5 served by vLLM-Omni, and read text aloud</string>
     <string name="tts_server">Server</string>
     <string name="tts_base_url">Server URL</string>

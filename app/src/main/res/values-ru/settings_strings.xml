@@ -73,6 +73,8 @@
     <string name="tts_voice_upload_ok">Голос «%1$s» загружен</string>
     <string name="tts_voice_upload_failed">Не удалось загрузить: %1$s</string>
     <string name="tts_voice_upload_clone_note">Клонированные голоса привязаны к модели Qwen3-TTS-VC; настройка модели переключается автоматически. DashScope берёт плату за каждый созданный голос.</string>
+    <string name="tts_speak_prompt">Инструкция для чтения</string>
+    <string name="tts_speak_prompt_desc">Инструкции для инструмента чтения модели. Требования к тону (emotion только на китайском) добавляются автоматически.</string>
     <string name="tts_enable_desc">Подключить совместимый с IndexTTS сервер (напр. IndexTTS 2.5 через vLLM-Omni) и читать текст вслух</string>
     <string name="tts_server">Сервер</string>
     <string name="tts_base_url">URL сервера</string>

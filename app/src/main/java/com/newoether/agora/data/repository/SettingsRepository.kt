@@ -13,6 +13,7 @@ import com.newoether.agora.data.DEFAULT_CONTEXT_COMPACT_THRESHOLD_PERCENT
 import com.newoether.agora.data.DEFAULT_DYNAMIC_COLOR
 import com.newoether.agora.data.DEFAULT_LOCAL_MODEL_IDLE_RETENTION_MINUTES
 import com.newoether.agora.data.DEFAULT_TTS_LANGUAGE
+import com.newoether.agora.data.DEFAULT_TTS_SPEAK_PROMPT
 import com.newoether.agora.data.DEFAULT_TTS_SPEED
 import com.newoether.agora.data.DEFAULT_LOCAL_LOW_CONTEXT_MODE_ENABLED
 import com.newoether.agora.data.DEFAULT_SCHEME_STYLE
@@ -170,14 +171,15 @@ class SettingsRepository(
     val imageGenEnabled: StateFlow<Boolean> = hot(settingsManager.imageGenEnabled, false)
     val imageGenModel: StateFlow<String?> = hot(settingsManager.imageGenModel, null)
     val imageGenSize: StateFlow<String> = hot(settingsManager.imageGenSize, "1024x1024")
-    val ttsEnabled: StateFlow<Boolean> = hot(settingsManager.ttsEnabled, false)
-    val ttsBaseUrl: StateFlow<String> = hot(settingsManager.ttsBaseUrl, "")
-    val ttsApiKey: StateFlow<String> = hot(settingsManager.ttsApiKey, "")
-    val ttsModelName: StateFlow<String> = hot(settingsManager.ttsModelName, "")
-    val ttsVoiceName: StateFlow<String> = hot(settingsManager.ttsVoiceName, "")
-    val ttsRefAudioUrl: StateFlow<String> = hot(settingsManager.ttsRefAudioUrl, "")
-    val ttsLanguage: StateFlow<String> = hot(settingsManager.ttsLanguage, DEFAULT_TTS_LANGUAGE)
-    val ttsSpeed: StateFlow<Float> = hot(settingsManager.ttsSpeed, DEFAULT_TTS_SPEED)
+    val ttsEnabled: StateFlow<Boolean> = hot(settingsManager.ttsPreferenceStore.enabled, false)
+    val ttsBaseUrl: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.baseUrl, "")
+    val ttsApiKey: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.apiKey, "")
+    val ttsModelName: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.modelName, "")
+    val ttsVoiceName: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.voiceName, "")
+    val ttsRefAudioUrl: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.refAudioUrl, "")
+    val ttsLanguage: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.language, DEFAULT_TTS_LANGUAGE)
+    val ttsSpeed: StateFlow<Float> = hot(settingsManager.ttsPreferenceStore.speed, DEFAULT_TTS_SPEED)
+    val ttsSpeakPrompt: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.speakPrompt, DEFAULT_TTS_SPEAK_PROMPT)
     val showDocumentationFab: StateFlow<Boolean> = hot(settingsManager.showDocumentationFab, true)
     val developerOptionsEnabled: StateFlow<Boolean> = hot(settingsManager.developerOptionsEnabled, false)
     val debugModelEnabled: StateFlow<Boolean> = hot(settingsManager.debugModelEnabled, false)
@@ -633,14 +635,15 @@ class SettingsRepository(
     fun setImageGenEnabled(enabled: Boolean) = scope.launch { settingsManager.saveImageGenEnabled(enabled) }
     fun setImageGenModel(model: String?) = scope.launch { settingsManager.saveImageGenModel(model) }
     fun setImageGenSize(size: String) = scope.launch { settingsManager.saveImageGenSize(size) }
-    fun setTtsEnabled(enabled: Boolean) = scope.launch { settingsManager.saveTtsEnabled(enabled) }
-    fun setTtsBaseUrl(url: String) = scope.launch { settingsManager.saveTtsBaseUrl(url) }
-    fun setTtsApiKey(key: String) = scope.launch { settingsManager.saveTtsApiKey(key) }
-    fun setTtsModelName(name: String) = scope.launch { settingsManager.saveTtsModelName(name) }
-    fun setTtsVoiceName(name: String) = scope.launch { settingsManager.saveTtsVoiceName(name) }
-    fun setTtsRefAudioUrl(url: String) = scope.launch { settingsManager.saveTtsRefAudioUrl(url) }
-    fun setTtsLanguage(language: String) = scope.launch { settingsManager.saveTtsLanguage(language) }
-    fun setTtsSpeed(speed: Float) = scope.launch { settingsManager.saveTtsSpeed(speed) }
+    fun setTtsEnabled(enabled: Boolean) = scope.launch { settingsManager.ttsPreferenceStore.saveEnabled(enabled) }
+    fun setTtsBaseUrl(url: String) = scope.launch { settingsManager.ttsPreferenceStore.saveBaseUrl(url) }
+    fun setTtsApiKey(key: String) = scope.launch { settingsManager.ttsPreferenceStore.saveApiKey(key) }
+    fun setTtsModelName(name: String) = scope.launch { settingsManager.ttsPreferenceStore.saveModelName(name) }
+    fun setTtsVoiceName(name: String) = scope.launch { settingsManager.ttsPreferenceStore.saveVoiceName(name) }
+    fun setTtsRefAudioUrl(url: String) = scope.launch { settingsManager.ttsPreferenceStore.saveRefAudioUrl(url) }
+    fun setTtsLanguage(language: String) = scope.launch { settingsManager.ttsPreferenceStore.saveLanguage(language) }
+    fun setTtsSpeed(speed: Float) = scope.launch { settingsManager.ttsPreferenceStore.saveSpeed(speed) }
+    fun setTtsSpeakPrompt(prompt: String) = scope.launch { settingsManager.ttsPreferenceStore.saveSpeakPrompt(prompt) }
     fun setShowDocumentationFab(enabled: Boolean) = scope.launch { settingsManager.saveShowDocumentationFab(enabled) }
     fun setDeveloperOptionsEnabled(enabled: Boolean) =
         scope.launch { settingsManager.saveDeveloperOptionsEnabled(enabled) }

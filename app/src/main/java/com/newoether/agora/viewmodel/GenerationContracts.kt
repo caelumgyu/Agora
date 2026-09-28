@@ -87,6 +87,8 @@ data class GenerationContext(
     val ttsRefAudioUrl: String = "",
     val ttsLanguage: String = com.newoether.agora.data.DEFAULT_TTS_LANGUAGE,
     val ttsSpeed: Float = com.newoether.agora.data.DEFAULT_TTS_SPEED,
+    /** User-editable `speak` tool description; blank falls back to the built-in prompt. */
+    val ttsSpeakPrompt: String = "",
     val automationToolsEnabled: Boolean = false,
     /** Workers use WorkManager's foreground execution instead of starting our service. */
     val foregroundServiceManagedExternally: Boolean = false,

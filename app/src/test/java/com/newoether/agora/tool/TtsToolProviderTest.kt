@@ -57,20 +57,33 @@ class TtsToolProviderTest {
 
     @Test
     fun `speak schema requires the spoken text and offers tone where supported`() {
-        val function = TtsToolProvider.definition(emotionSupported = true).function
+        val function = TtsToolProvider.definition(prompt = "CUSTOM PROMPT", emotionSupported = true).function
 
         assertEquals("speak", function.name)
         assertEquals(listOf("text"), function.parameters.required)
         assertEquals("string", function.parameters.properties.getValue("text").type)
         assertEquals("string", function.parameters.properties.getValue("emotion").type)
-        assertTrue(function.description.contains("emotion"))
-        // The rate stays a user setting; the model must not steer it.
+        assertTrue(function.description.startsWith("CUSTOM PROMPT"))
+        // The classifier only understands Chinese, so the requirement is appended automatically.
+        assertTrue(function.description.contains("Chinese"))
         assertFalse(function.parameters.properties.containsKey("speed"))
         assertFalse(function.description.contains("`speed`"))
 
-        val plain = TtsToolProvider.definition(emotionSupported = false)
-            .function.parameters.properties
-        assertFalse(plain.containsKey("emotion"))
+        val plain = TtsToolProvider.definition(prompt = "CUSTOM PROMPT", emotionSupported = false).function
+        assertFalse(plain.parameters.properties.containsKey("emotion"))
+        assertEquals("CUSTOM PROMPT", plain.description)
+    }
+
+    @Test
+    fun `prompt overrides fall back to the built-in description`() {
+        assertEquals(
+            com.newoether.agora.data.DEFAULT_TTS_SPEAK_PROMPT,
+            TtsToolProvider.promptFor(GenerationContext()),
+        )
+        assertEquals(
+            "自定义提示词",
+            TtsToolProvider.promptFor(GenerationContext(ttsSpeakPrompt = "自定义提示词")),
+        )
     }
 
     @Test

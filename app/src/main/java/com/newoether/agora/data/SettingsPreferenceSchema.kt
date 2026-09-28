@@ -83,6 +83,8 @@ internal val TTS_VOICE_NAME = stringPreferencesKey("tts_voice_name")
 internal val TTS_REF_AUDIO_URL = stringPreferencesKey("tts_ref_audio_url")
 internal val TTS_LANGUAGE = stringPreferencesKey("tts_language")
 internal val TTS_SPEED = stringPreferencesKey("tts_speed")
+/** User override for the `speak` tool description; blank falls back to the built-in prompt. */
+internal val TTS_SPEAK_PROMPT = stringPreferencesKey("tts_speak_prompt")
 internal val SEARCH_CONTEXT_WINDOW = intPreferencesKey("search_context_window")
 internal val SEARCH_MATCH_LIMIT = intPreferencesKey("search_match_limit")
 internal val RAG_THRESHOLD = stringPreferencesKey("rag_threshold")
