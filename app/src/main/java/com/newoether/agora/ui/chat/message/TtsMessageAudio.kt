@@ -24,31 +24,39 @@ private const val SPEAK_TOOL_NAME = "speak"
 
 private val ttsClipJson = Json { ignoreUnknownKeys = true }
 
-/** Every speech clip in [messages], in message order. */
+/**
+ * Every speech clip in [messages], in message order.
+ *
+ * A tool round repeats the same structured result on the model call row and on the result row, so
+ * clips are deduplicated by `toolCallId` — the first occurrence (the call row, which preserves the
+ * model's call order) wins.
+ */
 internal fun ttsAudioClips(messages: List<ChatMessage>): List<TtsAudioClip> {
-    val clips = ArrayList<TtsAudioClip>()
+    val clips = LinkedHashMap<String, TtsAudioClip>()
     for (message in messages) {
         for (segment in message.segments.orEmpty()) {
-            clipForSegment(segment)?.let(clips::add)
+            val clip = clipForSegment(segment) ?: continue
+            clips.putIfAbsent(clip.callId, clip)
         }
     }
-    return clips
+    return clips.values.toList()
 }
 
 /**
- * Latest speech clip per run. The message action bar shows one replay button per assistant
- * message, and that button replays the newest line the run actually spoke.
+ * Speech clips per run, in call order. The message action bar replays the whole sequence a run
+ * spoke, and auto-play enqueues every newly arriving clip in the same order.
  */
-internal fun latestTtsClipsByRun(messages: List<ChatMessage>): Map<String, TtsAudioClip> {
-    val clips = LinkedHashMap<String, TtsAudioClip>()
+internal fun ttsClipsByRun(messages: List<ChatMessage>): Map<String, List<TtsAudioClip>> {
+    val clipsByRun = LinkedHashMap<String, MutableList<TtsAudioClip>>()
     for (message in messages) {
         val runId = message.runId?.takeIf { it.isNotBlank() } ?: continue
         for (segment in message.segments.orEmpty()) {
             val clip = clipForSegment(segment) ?: continue
-            clips[runId] = clip
+            val runClips = clipsByRun.getOrPut(runId) { mutableListOf() }
+            if (runClips.none { it.callId == clip.callId }) runClips += clip
         }
     }
-    return clips
+    return clipsByRun
 }
 
 /**

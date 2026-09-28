@@ -19,15 +19,15 @@ import com.newoether.agora.R
  */
 @Composable
 internal fun TtsReplayButton(
-    clip: TtsAudioClip,
+    clips: List<TtsAudioClip>,
     playing: Boolean,
     enabled: Boolean,
     contentAlpha: Float,
     tint: Color,
-    onToggle: (TtsAudioClip) -> Unit,
+    onToggle: (List<TtsAudioClip>) -> Unit,
 ) {
     IconButton(
-        onClick = { onToggle(clip) },
+        onClick = { onToggle(clips) },
         enabled = enabled,
         modifier = Modifier
             .size(32.dp)

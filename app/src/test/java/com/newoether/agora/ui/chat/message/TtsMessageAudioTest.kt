@@ -53,6 +53,39 @@ class TtsMessageAudioTest {
     }
 
     @Test
+    fun `the tool row and its result row only yield one clip per call`() {
+        val clips = ttsAudioClips(
+            listOf(
+                message("a", "run-1", listOf(speakSegment("call-1", text = "第一句"))),
+                message("b", "run-1", listOf(speakSegment("call-1", text = "第一句"))),
+            ),
+        )
+
+        assertEquals(1, clips.size)
+        assertEquals("call-1", clips.single().callId)
+    }
+
+    @Test
+    fun `multiple calls keep the model's order`() {
+        val clips = ttsAudioClips(
+            listOf(
+                message(
+                    "a",
+                    "run-1",
+                    listOf(
+                        speakSegment("call-1", text = "第一句"),
+                        speakSegment("call-2", text = "第二句"),
+                        speakSegment("call-3", text = "第三句"),
+                    ),
+                ),
+            ),
+        )
+
+        assertEquals(listOf("call-1", "call-2", "call-3"), clips.map(TtsAudioClip::callId))
+        assertEquals(listOf("第一句", "第二句", "第三句"), clips.map(TtsAudioClip::text))
+    }
+
+    @Test
     fun `failed speech and unrelated tools never produce clips`() {
         val clips = ttsAudioClips(
             listOf(
@@ -76,32 +109,31 @@ class TtsMessageAudioTest {
     }
 
     @Test
-    fun `clips without a run stay out of the per-run lookup`() {
-        val clips = latestTtsClipsByRun(
-            listOf(message("a", null, listOf(speakSegment("call-1")))),
-        )
-
-        assertTrue(clips.isEmpty())
-    }
-
-    @Test
-    fun `latest clips are grouped per run`() {
-        val clips = latestTtsClipsByRun(
+    fun `clips are grouped per run in call order without duplicates`() {
+        val clips = ttsClipsByRun(
             listOf(
-                message("a", "run-1", listOf(speakSegment("call-1", text = "first"))),
-                message("b", "run-2", listOf(speakSegment("call-2", text = "other run"))),
-                message("c", "run-1", listOf(speakSegment("call-3", text = "second"))),
+                message(
+                    "a",
+                    "run-1",
+                    listOf(speakSegment("call-1", text = "第一句"), speakSegment("call-2", text = "第二句")),
+                ),
+                message("b", "run-2", listOf(speakSegment("call-3", text = "另一轮"))),
+                message("c", "run-1", listOf(speakSegment("call-1", text = "第一句"))),
             ),
         )
 
         assertEquals(setOf("run-1", "run-2"), clips.keys)
-        assertEquals("call-3", clips.getValue("run-1").callId)
-        assertEquals("second", clips.getValue("run-1").text)
-        assertEquals("call-2", clips.getValue("run-2").callId)
+        assertEquals(listOf("call-1", "call-2"), clips.getValue("run-1").map(TtsAudioClip::callId))
+        assertEquals(listOf("call-3"), clips.getValue("run-2").map(TtsAudioClip::callId))
     }
 
     @Test
-    fun `clip for a run without speech is absent`() {
-        assertNull(latestTtsClipsByRun(listOf(message("a", "run-1", emptyList())))["run-1"])
+    fun `clips without a run stay out of the per-run lookup`() {
+        val clips = ttsClipsByRun(
+            listOf(message("a", null, listOf(speakSegment("call-1")))),
+        )
+
+        assertTrue(clips.isEmpty())
+        assertNull(clips["run-1"])
     }
 }

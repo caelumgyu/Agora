@@ -25,8 +25,10 @@ import kotlinx.coroutines.flow.combine
 /**
  * The single active speech playback of the open conversation.
  *
- * One player is shared by every message action bar: starting a line stops whatever was playing,
- * and [playingClipId] drives the replay/stop icons. The instance is owned by the chat screen and
+ * A model may speak several lines in one turn (different tone or rate per sentence), so playback
+ * is a queue: auto-play appends each new line behind whatever still sounds, while the message
+ * action bar replays a whole run from the start. One player serves every action bar, and
+ * [playingClipId] drives the replay/stop icons. The instance is owned by the chat screen and
  * released with it.
  */
 @Stable
@@ -42,30 +44,66 @@ internal class ChatTtsPlayback(context: Context) {
         )
         addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
-                if (playbackState == Player.STATE_ENDED || playbackState == Player.STATE_IDLE) {
-                    playingClipId = null
-                }
+                if (playbackState == Player.STATE_ENDED) startNext()
             }
         })
     }
+
+    private val queue = ArrayDeque<TtsAudioClip>()
 
     /** Clip currently producing sound, if any. */
     var playingClipId: String? by mutableStateOf(null)
         private set
 
-    /** Replays [clip], or stops when that clip is already the active one. */
-    fun toggle(clip: TtsAudioClip) {
-        if (playingClipId == clip.callId) {
+    /** Replays [clips] from the start, or stops when any of them is already sounding. */
+    fun toggle(clips: List<TtsAudioClip>) {
+        if (clips.isEmpty()) return
+        if (playingClipId != null && clips.any { it.callId == playingClipId }) {
             stop()
         } else {
-            play(clip)
+            playAll(clips)
         }
     }
 
-    fun play(clip: TtsAudioClip) {
-        val file = File(clip.path)
+    /** Replaces any current playback with [clips], played in order. */
+    fun playAll(clips: List<TtsAudioClip>) {
+        queue.clear()
+        queue.addAll(clips)
+        startNext()
+    }
+
+    /** Appends newly arrived clips behind whatever still plays or waits. */
+    fun enqueue(clips: List<TtsAudioClip>) {
+        val pending = clips.filter { clip ->
+            clip.callId != playingClipId && queue.none { it.callId == clip.callId }
+        }
+        if (pending.isEmpty()) return
+        queue.addAll(pending)
+        if (playingClipId == null) startNext()
+    }
+
+    fun stop() {
+        queue.clear()
+        player.stop()
+        player.clearMediaItems()
+        playingClipId = null
+    }
+
+    fun release() {
+        queue.clear()
+        playingClipId = null
+        player.release()
+    }
+
+    private fun startNext() {
+        val next = queue.removeFirstOrNull()
+        if (next == null) {
+            playingClipId = null
+            return
+        }
+        val file = File(next.path)
         if (!file.isFile) {
-            stop()
+            startNext()
             return
         }
         player.stop()
@@ -73,18 +111,7 @@ internal class ChatTtsPlayback(context: Context) {
         player.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)))
         player.prepare()
         player.play()
-        playingClipId = clip.callId
-    }
-
-    fun stop() {
-        player.stop()
-        player.clearMediaItems()
-        playingClipId = null
-    }
-
-    fun release() {
-        playingClipId = null
-        player.release()
+        playingClipId = next.callId
     }
 }
 
@@ -121,9 +148,9 @@ internal fun rememberChatTtsPlayback(viewModel: ChatViewModel): ChatTtsPlayback 
                     initialized = true
                     return@collect
                 }
-                val fresh = clips.lastOrNull { it.callId !in seenClipIds }
+                val fresh = clips.filter { it.callId !in seenClipIds }
                 seenClipIds += clips.map(TtsAudioClip::callId)
-                if (fresh != null) playback.play(fresh)
+                if (fresh.isNotEmpty()) playback.enqueue(fresh)
             }
     }
     return playback

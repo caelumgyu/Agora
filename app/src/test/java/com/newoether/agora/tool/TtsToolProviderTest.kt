@@ -56,18 +56,21 @@ class TtsToolProviderTest {
     }
 
     @Test
-    fun `speak schema requires the spoken text and offers tone where supported`() {
-        val function = TtsToolProvider.definition(emotionSupported = true).function
+    fun `speak schema requires the spoken text and offers tone and rate where supported`() {
+        val function = TtsToolProvider.definition(emotionSupported = true, speedSupported = true).function
 
         assertEquals("speak", function.name)
         assertEquals(listOf("text"), function.parameters.required)
         assertEquals("string", function.parameters.properties.getValue("text").type)
         assertEquals("string", function.parameters.properties.getValue("emotion").type)
+        assertEquals("number", function.parameters.properties.getValue("speed").type)
         assertTrue(function.description.contains("emotion"))
-        assertFalse(
-            TtsToolProvider.definition(emotionSupported = false)
-                .function.parameters.properties.containsKey("emotion"),
-        )
+        assertTrue(function.description.contains("speed"))
+
+        val plain = TtsToolProvider.definition(emotionSupported = false, speedSupported = false)
+            .function.parameters.properties
+        assertFalse(plain.containsKey("emotion"))
+        assertFalse(plain.containsKey("speed"))
     }
 
     @Test
@@ -78,5 +81,14 @@ class TtsToolProviderTest {
         assertEquals("开心", TtsToolProvider.parseEmotion("""{"text":"hi","emotion":" 开心 "}"""))
         assertNull(TtsToolProvider.parseEmotion("""{"text":"hi"}"""))
         assertNull(TtsToolProvider.parseEmotion("""{"emotion":"  "}"""))
+    }
+
+    @Test
+    fun `per-line rate is parsed and clamped to the supported range`() {
+        assertEquals(1.5f, TtsToolProvider.parseSpeed("""{"text":"hi","speed":1.5}"""))
+        assertEquals(0.5f, TtsToolProvider.parseSpeed("""{"text":"hi","speed":0.2}"""))
+        assertEquals(2.0f, TtsToolProvider.parseSpeed("""{"text":"hi","speed":"3"}"""))
+        assertNull(TtsToolProvider.parseSpeed("""{"text":"hi"}"""))
+        assertNull(TtsToolProvider.parseSpeed("""{"text":"hi","speed":"fast"}"""))
     }
 }

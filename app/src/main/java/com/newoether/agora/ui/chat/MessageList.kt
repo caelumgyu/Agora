@@ -59,7 +59,7 @@ import com.newoether.agora.ui.chat.message.REGENERATION_ABORT_RESTORE_DURATION_M
 import com.newoether.agora.ui.chat.message.REGENERATION_EXIT_DURATION_MS
 import com.newoether.agora.ui.chat.message.SegmentAppearanceRegistry
 import com.newoether.agora.ui.chat.message.TtsAudioClip
-import com.newoether.agora.ui.chat.message.latestTtsClipsByRun
+import com.newoether.agora.ui.chat.message.ttsClipsByRun
 import com.newoether.agora.ui.motion.LocalAgoraMotionPolicy
 import com.newoether.agora.viewmodel.BranchReplacementTransitionRequest
 import kotlinx.coroutines.Job
@@ -116,7 +116,7 @@ internal fun MessageList(
     onFork: (String) -> Unit = {},
     onShare: (String) -> Unit = {},
     ttsPlayingClipId: String? = null,
-    onTtsPlayPause: (TtsAudioClip) -> Unit = {},
+    onTtsPlayPause: (List<TtsAudioClip>) -> Unit = {},
     onRecompact: (String) -> Unit = {},
     onDelete: (String, (Boolean) -> Unit) -> Boolean = { _, _ -> false },
     onDeleteConversation: (Set<String>, (Boolean) -> Unit) -> Boolean = { _, _ -> false },
@@ -215,7 +215,7 @@ internal fun MessageList(
         // One deep comparison per recomposition serves both the structural run projection keys and
         // the speech clips: the replay button must appear as soon as a `speak` result lands, and
         // that result does not change the structural key.
-        allMessages.list.map(ChatMessage::toRunProjectionKey) to latestTtsClipsByRun(allMessages.list)
+        allMessages.list.map(ChatMessage::toRunProjectionKey) to ttsClipsByRun(allMessages.list)
     }
     val allProjectionKey = allMessagesPresentation.first
     val ttsClipsByRunId = allMessagesPresentation.second
@@ -502,7 +502,7 @@ internal fun MessageList(
         // of participating in the fade.
         val presentation =
             runPresentation[message.id] ?: retainedBranchReplacementPresentations[message.id]
-        val ttsClip = message.runId?.let(ttsClipsByRunId::get)
+        val ttsClips = message.runId?.let(ttsClipsByRunId::get).orEmpty()
         val animateLifecycleEntrance =
             !isRetainedBranchReplacementExit &&
             message.id != regenerationTransition?.targetUserMessageId &&
@@ -629,8 +629,8 @@ internal fun MessageList(
             onRegenerate = onRegenerate,
             onFork = onFork,
             onShare = onShare,
-            ttsClip = ttsClip,
-            ttsPlaying = ttsClip != null && ttsClip.callId == ttsPlayingClipId,
+            ttsClips = ttsClips,
+            ttsPlaying = ttsClips.any { it.callId == ttsPlayingClipId },
             onTtsPlayPause = onTtsPlayPause,
             onRecompact = onRecompact,
             deleteTargetMessageId = deleteTargetMessageId,
