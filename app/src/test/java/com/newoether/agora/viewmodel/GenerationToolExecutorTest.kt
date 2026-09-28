@@ -6,6 +6,7 @@ import com.newoether.agora.model.RunEffectIdentity
 import com.newoether.agora.model.ToolExecutionStates
 import com.newoether.agora.tool.ToolExecutionEvent
 import com.newoether.agora.tool.ToolProvider
+import com.newoether.agora.tool.TtsToolProvider
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
@@ -103,6 +104,7 @@ class GenerationToolExecutorTest {
     @Test
     fun `image generation alone receives the extended execution timeout`() {
         assertEquals(600_000L, toolExecutionTimeoutMs("generate_image", 25L))
+        assertEquals(600_000L, toolExecutionTimeoutMs(TtsToolProvider.TOOL_NAME, 25L))
         assertEquals(25L, toolExecutionTimeoutMs("blocking_tool", 25L))
     }
 

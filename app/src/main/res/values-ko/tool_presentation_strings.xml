@@ -29,6 +29,8 @@
     <string name="tool_created_task_subject">%1$s 만듦</string>
     <string name="tool_listed_task_count">작업 %1$d개를 나열함</string>
     <string name="tool_deleted_task_subject">%1$s 삭제함</string>
+    <string name="tool_spoke_subject">읽어줌: %1$s</string>
+    <string name="tool_spoke_default">읽어주기 완료</string>
     <string name="tool_failed_to_read">%1$s 읽기 실패</string>
     <string name="tool_read_failed_default">읽기 실패</string>
     <string name="tool_failed_to_create">%1$s 만들기 실패</string>
@@ -46,6 +48,7 @@
     <string name="tool_failed_to_view">%1$s 보기 실패</string>
     <string name="tool_view_failed_default">이미지 보기 실패</string>
     <string name="tool_image_generation_failed">이미지 생성 실패</string>
+    <string name="tool_speech_failed">읽어주기 실패</string>
     <string name="tool_shell_failed_with_reason">셸 명령 실패: %1$s</string>
     <string name="tool_shell_job_read_failed">셸 작업 읽기 실패</string>
     <string name="tool_shell_job_stop_failed">셸 작업 중지 실패</string>

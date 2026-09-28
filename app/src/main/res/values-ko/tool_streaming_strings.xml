@@ -28,11 +28,13 @@
     <string name="tool_progress_editing">편집 중…</string>
     <string name="tool_progress_finding">찾는 중…</string>
     <string name="tool_progress_generating">생성 중…</string>
+    <string name="tool_progress_speaking">읽는 중…</string>
     <string name="tool_progress_creating">만드는 중…</string>
     <string name="tool_progress_deleting">삭제 중…</string>
     <string name="tool_progress_starting">시작 중…</string>
     <string name="tool_reading_conversation_subject">대화 %1$s 읽는 중…</string>
     <string name="tool_generating_image_subject">이미지 생성 중: %1$s…</string>
+    <string name="tool_speaking_subject">읽는 중: %1$s…</string>
     <string name="tool_creating_task_subject">작업 만드는 중: %1$s…</string>
     <string name="tool_deleting_task_subject">작업 삭제 중: %1$s…</string>
     <string name="tool_background_job_running_default">백그라운드 작업 실행 중</string>

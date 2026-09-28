@@ -56,10 +56,13 @@
     <string name="image_gen_size_hint">1024x1024</string>
     <string name="image_gen_show_all">すべてのモデルを表示</string>
     <string name="tool_generate_image">画像を生成</string>
+    <string name="tool_speak">読み上げ</string>
     <string name="tool_generating_image">画像を生成中…</string>
     <string name="settings_tts">テキスト読み上げ</string>
     <string name="settings_tts_desc">セルフホストの TTS サーバーでテキストを読み上げる</string>
     <string name="tts_enable">テキスト読み上げを有効化</string>
+    <string name="tts_replay_audio">音声を再生</string>
+    <string name="tts_stop_audio">再生を停止</string>
     <string name="tts_enable_desc">IndexTTS 互換サーバーに接続（例：vLLM-Omni で提供する IndexTTS 2.5）してテキストを読み上げる</string>
     <string name="tts_server">サーバー</string>
     <string name="tts_base_url">サーバー URL</string>

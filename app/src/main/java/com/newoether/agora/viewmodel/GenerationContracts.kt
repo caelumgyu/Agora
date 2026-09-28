@@ -78,6 +78,15 @@ data class GenerationContext(
     val imageGenBaseUrl: String = "",
     val imageGenModel: String = "gpt-image-1",
     val imageGenSize: String = "1024x1024",
+    /** Self-hosted speech synthesis exposed to the model as the `speak` tool. */
+    val ttsEnabled: Boolean = false,
+    val ttsBaseUrl: String = "",
+    val ttsApiKey: String = "",
+    val ttsModelName: String = "",
+    val ttsVoiceName: String = "",
+    val ttsRefAudioUrl: String = "",
+    val ttsLanguage: String = com.newoether.agora.data.DEFAULT_TTS_LANGUAGE,
+    val ttsSpeed: Float = com.newoether.agora.data.DEFAULT_TTS_SPEED,
     val automationToolsEnabled: Boolean = false,
     /** Workers use WorkManager's foreground execution instead of starting our service. */
     val foregroundServiceManagedExternally: Boolean = false,

@@ -57,10 +57,13 @@
     <string name="image_gen_size_hint">1024x1024</string>
     <string name="image_gen_show_all">Show All Models</string>
     <string name="tool_generate_image">Generate Image</string>
+    <string name="tool_speak">Read aloud</string>
     <string name="tool_generating_image">Generating image…</string>
     <string name="settings_tts">Text to Speech</string>
     <string name="settings_tts_desc">Read text aloud via a self-hosted TTS server</string>
     <string name="tts_enable">Enable Text to Speech</string>
+    <string name="tts_replay_audio">Replay audio</string>
+    <string name="tts_stop_audio">Stop audio</string>
     <string name="tts_enable_desc">Connect an IndexTTS-compatible server, e.g. IndexTTS 2.5 served by vLLM-Omni, and read text aloud</string>
     <string name="tts_server">Server</string>
     <string name="tts_base_url">Server URL</string>

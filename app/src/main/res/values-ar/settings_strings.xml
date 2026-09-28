@@ -56,10 +56,13 @@
     <string name="image_gen_size_hint">1024x1024</string>
     <string name="image_gen_show_all">عرض كل النماذج</string>
     <string name="tool_generate_image">توليد صورة</string>
+    <string name="tool_speak">القراءة بصوت عالٍ</string>
     <string name="tool_generating_image">جارٍ توليد الصورة…</string>
     <string name="settings_tts">تحويل النص إلى كلام</string>
     <string name="settings_tts_desc">قراءة النص بصوت عالٍ عبر خادم TTS ذاتي الاستضافة</string>
     <string name="tts_enable">تفعيل تحويل النص إلى كلام</string>
+    <string name="tts_replay_audio">إعادة تشغيل الصوت</string>
+    <string name="tts_stop_audio">إيقاف الصوت</string>
     <string name="tts_enable_desc">الاتصال بخادم متوافق مع IndexTTS (مثل IndexTTS 2.5 عبر vLLM-Omni) وقراءة النص بصوت عالٍ</string>
     <string name="tts_server">الخادم</string>
     <string name="tts_base_url">عنوان الخادم</string>

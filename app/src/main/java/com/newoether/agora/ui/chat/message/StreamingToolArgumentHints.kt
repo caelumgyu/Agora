@@ -51,6 +51,7 @@ internal object StreamingToolArgumentHintResolver {
             ToolKind.FILE_GLOB,
             ToolKind.FILE_GREP -> root.scalar("pattern")
             ToolKind.IMAGE_GENERATE -> root.scalar("prompt")
+            ToolKind.SPEAK -> root.scalar("text")
             ToolKind.TASK_CREATE -> root.scalar("name")
             ToolKind.TASK_DELETE -> root.scalar("id_or_name")
                 ?: root.scalar("name")

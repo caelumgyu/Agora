@@ -56,10 +56,13 @@
     <string name="image_gen_size_hint">1024x1024</string>
     <string name="image_gen_show_all">Mostrar todos os modelos</string>
     <string name="tool_generate_image">Gerar imagem</string>
+    <string name="tool_speak">Ler em voz alta</string>
     <string name="tool_generating_image">Gerando imagem…</string>
     <string name="settings_tts">Síntese de voz</string>
     <string name="settings_tts_desc">Ler texto em voz alta por meio de um servidor TTS auto-hospedado</string>
     <string name="tts_enable">Ativar síntese de voz</string>
+    <string name="tts_replay_audio">Reproduzir áudio</string>
+    <string name="tts_stop_audio">Parar áudio</string>
     <string name="tts_enable_desc">Conectar a um servidor compatível com IndexTTS (ex.: IndexTTS 2.5 via vLLM-Omni) e ler texto em voz alta</string>
     <string name="tts_server">Servidor</string>
     <string name="tts_base_url">URL do servidor</string>

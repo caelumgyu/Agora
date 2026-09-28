@@ -29,6 +29,8 @@
     <string name="tool_created_task_subject">已建立 %1$s</string>
     <string name="tool_listed_task_count">已列出 %1$d 個任務</string>
     <string name="tool_deleted_task_subject">已刪除 %1$s</string>
+    <string name="tool_spoke_subject">已朗讀：%1$s</string>
+    <string name="tool_spoke_default">已朗讀</string>
     <string name="tool_failed_to_read">無法讀取 %1$s</string>
     <string name="tool_read_failed_default">讀取失敗</string>
     <string name="tool_failed_to_create">無法建立 %1$s</string>
@@ -46,6 +48,7 @@
     <string name="tool_failed_to_view">無法檢視 %1$s</string>
     <string name="tool_view_failed_default">無法檢視圖片</string>
     <string name="tool_image_generation_failed">無法產生圖片</string>
+    <string name="tool_speech_failed">朗讀失敗</string>
     <string name="tool_shell_failed_with_reason">Shell 指令失敗：%1$s</string>
     <string name="tool_shell_job_read_failed">無法讀取 Shell 任務</string>
     <string name="tool_shell_job_stop_failed">無法停止 Shell 任務</string>

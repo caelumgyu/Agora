@@ -101,6 +101,7 @@ private fun toolBaseDisplayName(
     ToolKind.FILE_GREP -> stringResource(R.string.tool_file_grep)
     ToolKind.IMAGE_VIEW -> stringResource(R.string.tool_view_image)
     ToolKind.IMAGE_GENERATE -> stringResource(R.string.tool_generate_image)
+    ToolKind.SPEAK -> stringResource(R.string.tool_speak)
     ToolKind.TASK_CREATE -> stringResource(R.string.tool_create_task)
     ToolKind.TASK_LIST -> stringResource(R.string.tool_list_tasks)
     ToolKind.TASK_DELETE -> stringResource(R.string.tool_delete_task)
@@ -268,6 +269,11 @@ private fun runningSummary(
         subject,
         R.string.tool_generating_image_subject,
         R.string.tool_progress_generating,
+    )
+    ToolKind.SPEAK -> optionalSubjectSummary(
+        subject,
+        R.string.tool_speaking_subject,
+        R.string.tool_progress_speaking,
     )
     ToolKind.TASK_CREATE -> optionalSubjectSummary(
         subject,
@@ -533,6 +539,11 @@ private fun completedSummary(
         R.string.tool_viewed_image_default,
     )
     ToolKind.IMAGE_GENERATE -> stringResource(R.string.tool_generated_image)
+    ToolKind.SPEAK -> optionalSubjectSummary(
+        subject,
+        R.string.tool_spoke_subject,
+        R.string.tool_spoke_default,
+    )
     ToolKind.TASK_CREATE -> optionalSubjectSummary(
         subject,
         R.string.tool_created_task_subject,
@@ -585,6 +596,7 @@ private fun failedSummary(
         ToolKind.IMAGE_VIEW -> target?.let { stringResource(R.string.tool_failed_to_view, it) }
             ?: stringResource(R.string.tool_view_failed_default)
         ToolKind.IMAGE_GENERATE -> stringResource(R.string.tool_image_generation_failed)
+        ToolKind.SPEAK -> stringResource(R.string.tool_speech_failed)
         ToolKind.SHELL_EXECUTE -> reason?.let {
             stringResource(R.string.tool_shell_failed_with_reason, it)
         } ?: stringResource(R.string.tool_shell_failed)

@@ -22,6 +22,7 @@ import com.newoether.agora.tool.ToolExecutionResult
 import com.newoether.agora.tool.ToolImageStore
 import com.newoether.agora.tool.ToolPresentationMetadata
 import com.newoether.agora.tool.ToolProvider
+import com.newoether.agora.tool.TtsToolProvider
 import com.newoether.agora.tool.WebSearchToolProvider
 import com.newoether.agora.util.Constants
 import kotlinx.coroutines.CancellationException
@@ -102,6 +103,7 @@ internal class GenerationToolExecutor private constructor(
                     WebSearchToolProvider(),
                     RagToolProvider(conversations),
                     imageGenProvider,
+                    TtsToolProvider(app),
                     shellProvider,
                 ) + additionalProviders,
                 imageGenProvider = imageGenProvider,
@@ -252,10 +254,10 @@ internal class GenerationToolExecutor private constructor(
 internal fun toolExecutionTimeoutMs(
     toolName: String,
     defaultTimeoutMs: Long,
-): Long = if (toolName == "generate_image") {
-    Constants.IMAGE_GENERATION_TIMEOUT_MS
-} else {
-    defaultTimeoutMs
+): Long = when (toolName) {
+    "generate_image" -> Constants.IMAGE_GENERATION_TIMEOUT_MS
+    TtsToolProvider.TOOL_NAME -> Constants.TTS_SYNTHESIS_TIMEOUT_MS
+    else -> defaultTimeoutMs
 }
 
 internal fun appendBoundedToolOutput(

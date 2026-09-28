@@ -129,6 +129,8 @@ fun ChatApp(
         modelAliases
     }
     val thoughtExpandedStates = remember(currentConversationId) { mutableStateMapOf<String, Boolean>() }
+    // One speech player per chat screen: new clips auto-play, the action bar replays and stops.
+    val ttsPlayback = rememberChatTtsPlayback(viewModel)
     val isNewChatMode by viewModel.isNewChatMode.collectAsState()
     val newChatEntryId by viewModel.newChatEntryId.collectAsState()
     val isSwitching by viewModel.isSwitching.collectAsState()
@@ -571,6 +573,8 @@ fun ChatApp(
                                 onShare = { id ->
                                     viewModel.shareGeneration(id)
                                 },
+                                ttsPlayingClipId = ttsPlayback.playingClipId,
+                                onTtsPlayPause = ttsPlayback::toggle,
                                 onRecompact = { id ->
                                     viewModel.compactUi.startRecompact(id)
                                 },

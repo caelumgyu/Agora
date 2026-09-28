@@ -29,6 +29,8 @@
     <string name="tool_created_task_subject">%1$s を作成しました</string>
     <string name="tool_listed_task_count">タスクを %1$d 件一覧表示しました</string>
     <string name="tool_deleted_task_subject">%1$s を削除しました</string>
+    <string name="tool_spoke_subject">読み上げ: %1$s</string>
+    <string name="tool_spoke_default">読み上げました</string>
     <string name="tool_failed_to_read">%1$s を読み取れませんでした</string>
     <string name="tool_read_failed_default">読み取りに失敗しました</string>
     <string name="tool_failed_to_create">%1$s を作成できませんでした</string>
@@ -46,6 +48,7 @@
     <string name="tool_failed_to_view">%1$s を表示できませんでした</string>
     <string name="tool_view_failed_default">画像を表示できませんでした</string>
     <string name="tool_image_generation_failed">画像を生成できませんでした</string>
+    <string name="tool_speech_failed">読み上げに失敗しました</string>
     <string name="tool_shell_failed_with_reason">シェルコマンドに失敗しました: %1$s</string>
     <string name="tool_shell_job_read_failed">シェルジョブを読み取れませんでした</string>
     <string name="tool_shell_job_stop_failed">シェルジョブを停止できませんでした</string>

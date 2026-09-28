@@ -8,6 +8,7 @@ Depending on settings, build, and provider support, tools include:
 
 - web search
 - image generation
+- text to speech (`speak`, when a TTS server is configured)
 - active and saved memory
 - past-conversation search
 - MCP servers
@@ -21,4 +22,4 @@ Web search, active memory, saved memory, past-conversation access, and the globa
 
 Tool calls and results become part of the conversation protocol and can be sent to the selected model on subsequent passes. External tools receive the arguments needed for their call. Review each server and permission before enabling it.
 
-Image-generation and embedding credentials come from their selected providers; they are not separate universal tool secrets. See [MCP](mcp.md), [Automation](automation.md), [Shell](shell.md), and [Privacy & Security](privacy.md).
+Image-generation and embedding credentials come from their selected providers; they are not separate universal tool secrets. Speech synthesis uses the server configured under Settings → Multimodal → Text to Speech. See [MCP](mcp.md), [Automation](automation.md), [Shell](shell.md), [Text to Speech](tts.md), and [Privacy & Security](privacy.md).

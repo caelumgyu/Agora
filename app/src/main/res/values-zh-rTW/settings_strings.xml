@@ -57,10 +57,13 @@
     <string name="image_gen_size_hint">1024x1024</string>
     <string name="image_gen_show_all">顯示全部模型</string>
     <string name="tool_generate_image">生成圖片</string>
+    <string name="tool_speak">朗讀</string>
     <string name="tool_generating_image">正在生成圖片…</string>
     <string name="settings_tts">文字轉語音</string>
     <string name="settings_tts_desc">透過自託管 TTS 伺服器朗讀文本</string>
     <string name="tts_enable">啟用文字轉語音</string>
+    <string name="tts_replay_audio">重播音訊</string>
+    <string name="tts_stop_audio">停止播放</string>
     <string name="tts_enable_desc">連接相容 IndexTTS 的伺服器（例如以 vLLM-Omni 部署的 IndexTTS 2.5），朗讀任意文本</string>
     <string name="tts_server">伺服器</string>
     <string name="tts_base_url">伺服器位址</string>

@@ -29,6 +29,8 @@
     <string name="tool_created_task_subject">تم إنشاء %1$s</string>
     <string name="tool_listed_task_count">تم سرد %1$d من المهام</string>
     <string name="tool_deleted_task_subject">تم حذف %1$s</string>
+    <string name="tool_spoke_subject">قُرئ بصوت عالٍ: %1$s</string>
+    <string name="tool_spoke_default">قُرئ بصوت عالٍ</string>
     <string name="tool_failed_to_read">تعذرت قراءة %1$s</string>
     <string name="tool_read_failed_default">تعذرت القراءة</string>
     <string name="tool_failed_to_create">تعذر إنشاء %1$s</string>
@@ -46,6 +48,7 @@
     <string name="tool_failed_to_view">تعذر عرض %1$s</string>
     <string name="tool_view_failed_default">تعذر عرض الصورة</string>
     <string name="tool_image_generation_failed">تعذر إنشاء الصورة</string>
+    <string name="tool_speech_failed">فشلت القراءة بصوت عالٍ</string>
     <string name="tool_shell_failed_with_reason">فشل أمر الغلاف: %1$s</string>
     <string name="tool_shell_job_read_failed">تعذرت قراءة مهمة الغلاف</string>
     <string name="tool_shell_job_stop_failed">تعذر إيقاف مهمة الغلاف</string>

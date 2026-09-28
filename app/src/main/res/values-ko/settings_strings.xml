@@ -56,10 +56,13 @@
     <string name="image_gen_size_hint">1024x1024</string>
     <string name="image_gen_show_all">모든 모델 표시</string>
     <string name="tool_generate_image">이미지 생성</string>
+    <string name="tool_speak">읽어주기</string>
     <string name="tool_generating_image">이미지 생성 중…</string>
     <string name="settings_tts">텍스트 음성 변환</string>
     <string name="settings_tts_desc">셀프호스팅 TTS 서버로 텍스트를 소리 내어 읽기</string>
     <string name="tts_enable">텍스트 음성 변환 켜기</string>
+    <string name="tts_replay_audio">오디오 다시 재생</string>
+    <string name="tts_stop_audio">재생 중지</string>
     <string name="tts_enable_desc">IndexTTS 호환 서버에 연결(예: vLLM-Omni의 IndexTTS 2.5)하고 텍스트를 소리 내어 읽기</string>
     <string name="tts_server">서버</string>
     <string name="tts_base_url">서버 URL</string>

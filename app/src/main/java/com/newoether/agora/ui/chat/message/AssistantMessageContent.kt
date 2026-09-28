@@ -94,6 +94,10 @@ internal fun AssistantMessageContent(
     onRegenerate: (String) -> Boolean,
     onFork: () -> Unit,
     onShare: () -> Unit,
+    /** Speech clip this run produced, if any; null hides the replay button. */
+    ttsClip: TtsAudioClip?,
+    ttsPlaying: Boolean,
+    onTtsPlayPause: (TtsAudioClip) -> Unit,
     onMediaClick: (List<String>, Int) -> Unit,
     onShowInfo: () -> Unit,
     onShowDelete: () -> Unit,
@@ -628,6 +632,16 @@ internal fun AssistantMessageContent(
                     }
                     val answerTailVisible = shouldShowStreamingTailIndicator(isStreaming, isStopping, message)
                     val actionContent: @Composable RowScope.() -> Unit = {
+                        ttsClip?.let { clip ->
+                            TtsReplayButton(
+                                clip = clip,
+                                playing = ttsPlaying,
+                                enabled = actionAvailability.informationEnabled,
+                                contentAlpha = informationActionsAlpha,
+                                tint = enabledActionTint,
+                                onToggle = onTtsPlayPause,
+                            )
+                        }
                         if (!actionCopyText.isNullOrBlank()) {
                             IconButton(
                                 onClick = {

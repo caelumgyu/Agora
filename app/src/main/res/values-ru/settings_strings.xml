@@ -56,10 +56,13 @@
     <string name="image_gen_size_hint">1024x1024</string>
     <string name="image_gen_show_all">Показать все модели</string>
     <string name="tool_generate_image">Создать изображение</string>
+    <string name="tool_speak">Прочитать вслух</string>
     <string name="tool_generating_image">Создание изображения…</string>
     <string name="settings_tts">Озвучка текста</string>
     <string name="settings_tts_desc">Чтение текста вслух через самохостинг TTS-сервер</string>
     <string name="tts_enable">Включить озвучку текста</string>
+    <string name="tts_replay_audio">Повторить аудио</string>
+    <string name="tts_stop_audio">Остановить воспроизведение</string>
     <string name="tts_enable_desc">Подключить совместимый с IndexTTS сервер (напр. IndexTTS 2.5 через vLLM-Omni) и читать текст вслух</string>
     <string name="tts_server">Сервер</string>
     <string name="tts_base_url">URL сервера</string>

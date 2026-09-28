@@ -365,6 +365,9 @@ private fun ToolCompletedContent(
         ToolKind.FILE_GREP -> FileGrepResult(presentation)
         ToolKind.FILE_READ -> FileReadResult(presentation)
         ToolKind.WEB_SEARCH -> WebSearchResult(presentation)
+        // Speech has no inspectable payload beyond the spoken line itself; the raw status JSON
+        // would only show protocol plumbing.
+        ToolKind.SPEAK -> ToolMutedContent(toolSummary(presentation))
         else -> {
             val result = presentation.rawResult
             if (result.isNullOrEmpty()) {

@@ -18,6 +18,16 @@ The **Test Synthesis** button synthesizes a short sample with the current settin
 
 The **Detect models and voices** row queries the server (`GET /v1/models` and `GET /v1/audio/voices`) and fills the Model Name and Voice Name dropdowns with what the server currently offers. Detection runs automatically when TTS is enabled or the server URL changes; tap the row to re-run it manually. Both fields still accept manual entry for values that are not in the list.
 
+## Letting the model speak
+
+Once enabled, Agora offers a `speak` tool to models that support tool calling. The model decides when to use it and **writes the spoken line itself** — usually a speech-friendly summary of the answer rather than the full message read verbatim.
+
+- The audio plays automatically as soon as it is synthesized, and the reply's message action bar gains a **Replay audio** button that can replay or stop it.
+- Auto-play only covers speech produced after you opened the conversation; old conversations stay silent until replayed.
+- A reply whose model never called `speak` is never read aloud — there is no "read the whole message" fallback.
+- A failed synthesis leaves no replay button; the error shows on the tool card as usual.
+- Speech uses the default voice, language and speed from the settings above.
+
 ## Serving IndexTTS 2.5 with vLLM-Omni
 
 ```bash
@@ -45,4 +55,4 @@ A plain Gradio WebUI is not enough — Agora needs the `/v1/audio/speech` endpoi
 
 ## Data flow
 
-The text is sent to the TTS server you configured, and synthesized audio is written to Agora's app cache on this device. See [Privacy & Security](privacy.md).
+The text is sent to the TTS server you configured. Audio synthesized by the **Test Synthesis** button is written to the app cache; speech produced by the `speak` tool is kept in Agora's private app storage so the replay button keeps working. See [Privacy & Security](privacy.md).

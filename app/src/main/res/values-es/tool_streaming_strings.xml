@@ -28,11 +28,13 @@
     <string name="tool_progress_editing">Editando…</string>
     <string name="tool_progress_finding">Buscando…</string>
     <string name="tool_progress_generating">Generando…</string>
+    <string name="tool_progress_speaking">Leyendo en voz alta…</string>
     <string name="tool_progress_creating">Creando…</string>
     <string name="tool_progress_deleting">Eliminando…</string>
     <string name="tool_progress_starting">Iniciando…</string>
     <string name="tool_reading_conversation_subject">Leyendo conversación %1$s…</string>
     <string name="tool_generating_image_subject">Generando imagen: %1$s…</string>
+    <string name="tool_speaking_subject">Leyendo en voz alta: %1$s…</string>
     <string name="tool_creating_task_subject">Creando tarea: %1$s…</string>
     <string name="tool_deleting_task_subject">Eliminando tarea: %1$s…</string>
     <string name="tool_background_job_running_default">La tarea en segundo plano está en ejecución</string>

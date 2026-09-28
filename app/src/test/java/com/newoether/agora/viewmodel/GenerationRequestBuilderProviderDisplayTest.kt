@@ -5,6 +5,8 @@ import com.newoether.agora.R
 import com.newoether.agora.data.ConversationSettings
 import com.newoether.agora.data.CustomProviderConfig
 import com.newoether.agora.data.CustomEndpointProtocol
+import com.newoether.agora.data.DEFAULT_TTS_LANGUAGE
+import com.newoether.agora.data.DEFAULT_TTS_SPEED
 import com.newoether.agora.data.MemoryManager
 import com.newoether.agora.data.PredefinedVariables
 import com.newoether.agora.data.PromptItemType
@@ -567,6 +569,14 @@ private class RequestBuilderFixture(
         every { settings.webSearchBaseUrl } returns MutableStateFlow("")
         every { settings.imageGenEnabled } returns MutableStateFlow(false)
         every { settings.imageGenSize } returns MutableStateFlow("1024x1024")
+        every { settings.ttsEnabled } returns MutableStateFlow(false)
+        every { settings.ttsBaseUrl } returns MutableStateFlow("")
+        every { settings.ttsApiKey } returns MutableStateFlow("")
+        every { settings.ttsModelName } returns MutableStateFlow("")
+        every { settings.ttsVoiceName } returns MutableStateFlow("")
+        every { settings.ttsRefAudioUrl } returns MutableStateFlow("")
+        every { settings.ttsLanguage } returns MutableStateFlow(DEFAULT_TTS_LANGUAGE)
+        every { settings.ttsSpeed } returns MutableStateFlow(DEFAULT_TTS_SPEED)
         every { settings.automationToolsEnabled } returns MutableStateFlow(true)
         every { settings.shellDevices } returns MutableStateFlow(emptyList())
         every { settings.sandboxEnabled } returns MutableStateFlow(true)

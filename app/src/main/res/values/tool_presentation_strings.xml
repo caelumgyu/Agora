@@ -30,6 +30,8 @@
     <string name="tool_created_task_subject">Created %1$s</string>
     <string name="tool_listed_task_count">Listed %1$d tasks</string>
     <string name="tool_deleted_task_subject">Deleted %1$s</string>
+    <string name="tool_spoke_subject">Read aloud: %1$s</string>
+    <string name="tool_spoke_default">Read aloud</string>
 
     <string name="tool_failed_to_read">Failed to read %1$s</string>
     <string name="tool_read_failed_default">Failed to read</string>
@@ -48,6 +50,7 @@
     <string name="tool_failed_to_view">Failed to view %1$s</string>
     <string name="tool_view_failed_default">Failed to view image</string>
     <string name="tool_image_generation_failed">Failed to generate image</string>
+    <string name="tool_speech_failed">Failed to read aloud</string>
     <string name="tool_shell_failed_with_reason">Shell command failed: %1$s</string>
     <string name="tool_shell_job_read_failed">Failed to read shell job</string>
     <string name="tool_shell_job_stop_failed">Failed to stop shell job</string>

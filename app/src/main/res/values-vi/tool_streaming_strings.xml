@@ -28,11 +28,13 @@
     <string name="tool_progress_editing">Đang chỉnh sửa…</string>
     <string name="tool_progress_finding">Đang tìm…</string>
     <string name="tool_progress_generating">Đang tạo…</string>
+    <string name="tool_progress_speaking">Đang đọc to…</string>
     <string name="tool_progress_creating">Đang tạo…</string>
     <string name="tool_progress_deleting">Đang xóa…</string>
     <string name="tool_progress_starting">Đang bắt đầu…</string>
     <string name="tool_reading_conversation_subject">Đang đọc cuộc trò chuyện %1$s…</string>
     <string name="tool_generating_image_subject">Đang tạo hình ảnh: %1$s…</string>
+    <string name="tool_speaking_subject">Đang đọc to: %1$s…</string>
     <string name="tool_creating_task_subject">Đang tạo tác vụ: %1$s…</string>
     <string name="tool_deleting_task_subject">Đang xóa tác vụ: %1$s…</string>
     <string name="tool_background_job_running_default">Tác vụ nền đang chạy</string>

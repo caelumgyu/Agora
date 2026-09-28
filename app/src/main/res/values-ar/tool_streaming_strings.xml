@@ -28,11 +28,13 @@
     <string name="tool_progress_editing">جارٍ التحرير…</string>
     <string name="tool_progress_finding">جارٍ العثور…</string>
     <string name="tool_progress_generating">جارٍ التوليد…</string>
+    <string name="tool_progress_speaking">جارٍ القراءة بصوت عالٍ…</string>
     <string name="tool_progress_creating">جارٍ الإنشاء…</string>
     <string name="tool_progress_deleting">جارٍ الحذف…</string>
     <string name="tool_progress_starting">جارٍ البدء…</string>
     <string name="tool_reading_conversation_subject">جارٍ قراءة المحادثة %1$s…</string>
     <string name="tool_generating_image_subject">جارٍ توليد الصورة: %1$s…</string>
+    <string name="tool_speaking_subject">القراءة بصوت عالٍ: %1$s…</string>
     <string name="tool_creating_task_subject">جارٍ إنشاء المهمة: %1$s…</string>
     <string name="tool_deleting_task_subject">جارٍ حذف المهمة: %1$s…</string>
     <string name="tool_background_job_running_default">مهمة الخلفية قيد التشغيل</string>

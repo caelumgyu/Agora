@@ -56,10 +56,13 @@
     <string name="image_gen_size_hint">1024x1024</string>
     <string name="image_gen_show_all">Hiển thị tất cả mô hình</string>
     <string name="tool_generate_image">Tạo hình ảnh</string>
+    <string name="tool_speak">Đọc to</string>
     <string name="tool_generating_image">Đang tạo hình ảnh…</string>
     <string name="settings_tts">Tổng hợp giọng nói</string>
     <string name="settings_tts_desc">Đọc to văn bản bằng máy chủ TTS tự lưu trữ</string>
     <string name="tts_enable">Bật tổng hợp giọng nói</string>
+    <string name="tts_replay_audio">Phát lại âm thanh</string>
+    <string name="tts_stop_audio">Dừng âm thanh</string>
     <string name="tts_enable_desc">Kết nối máy chủ tương thích IndexTTS (ví dụ IndexTTS 2.5 qua vLLM-Omni) và đọc to văn bản</string>
     <string name="tts_server">Máy chủ</string>
     <string name="tts_base_url">URL máy chủ</string>
