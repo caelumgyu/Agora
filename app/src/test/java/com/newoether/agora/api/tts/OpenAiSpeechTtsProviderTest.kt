@@ -46,6 +46,26 @@ class OpenAiSpeechTtsProviderTest {
     }
 
     @Test
+    fun `tone descriptions enable the server-side emotion classifier`() {
+        val described = OpenAiSpeechTtsProvider.buildBody(
+            TtsRequest("hi", "m", voiceName = "demo", language = "zh", emotion = " 难过、语速缓慢 "),
+        )
+        assertTrue(described.contains(""""emo_text":"难过、语速缓慢""""))
+        assertTrue(described.contains(""""use_emo_text":true"""))
+
+        val auto = OpenAiSpeechTtsProvider.buildBody(
+            TtsRequest("hi", "m", voiceName = "demo", language = "zh", emotion = "auto"),
+        )
+        assertTrue(auto.contains(""""use_emo_text":true"""))
+        assertFalse(auto.contains(""""emo_text":"""))
+
+        val neutral = OpenAiSpeechTtsProvider.buildBody(
+            TtsRequest("hi", "m", voiceName = "demo", language = "zh"),
+        )
+        assertFalse(neutral.contains("use_emo_text"))
+    }
+
+    @Test
     fun `voice upload response yields the registered name`() {
         val voice = OpenAiSpeechTtsProvider.parseUploadedVoice(
             """{"success":true,"voice":{"name":"甘城","consent":"user-authorized","created_at":1,"mime_type":"audio/wav","file_size":501156}}""",

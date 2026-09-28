@@ -44,6 +44,8 @@ internal class OpenAiSpeechTtsProvider : TtsProvider {
             val voice = request.voiceName?.trim()?.takeIf { it.isNotBlank() }
                 ?: request.refAudioUrl?.trim()?.takeIf { it.isNotBlank() }
                 ?: throw TtsError("voice or ref_audio is required")
+            val emotion = request.emotion?.trim()?.takeIf { it.isNotBlank() }
+            val autoEmotion = emotion?.equals("auto", ignoreCase = true) == true
             return buildJsonObject {
                 put("model", request.model.trim())
                 put("input", request.text)
@@ -59,6 +61,12 @@ internal class OpenAiSpeechTtsProvider : TtsProvider {
                     buildJsonObject {
                         put("lang", request.language)
                         put("text_normalization", true)
+                        if (emotion != null) {
+                            // IndexTTS QwenEmotion path: classify the description (or the spoken
+                            // line itself when the caller asked for "auto").
+                            put("use_emo_text", true)
+                            if (!autoEmotion) put("emo_text", emotion)
+                        }
                     },
                 )
             }.toString()

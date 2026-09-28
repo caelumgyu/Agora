@@ -27,6 +27,7 @@ Once enabled, Agora offers a `speak` tool to models that support tool calling. T
 - The audio plays automatically as soon as it is synthesized, and the reply's message action bar gains a **Replay audio** button that can replay or stop it.
 - Auto-play only covers speech produced after you opened the conversation; old conversations stay silent until replayed.
 - A reply whose model never called `speak` is never read aloud — there is no "read the whole message" fallback.
+- When the tone matters, the model can pass `emotion` (a short description such as 开心 or 疲惫, or `auto`) and an IndexTTS server turns it into `extra_params.emo_text` + `use_emo_text`; DashScope ignores it.
 - A failed synthesis leaves no replay button; the error shows on the tool card as usual.
 - Speech uses the default voice, language and speed from the settings above.
 

@@ -56,19 +56,27 @@ class TtsToolProviderTest {
     }
 
     @Test
-    fun `speak schema requires the spoken text`() {
-        val function = TtsToolProvider.definition().function
+    fun `speak schema requires the spoken text and offers tone where supported`() {
+        val function = TtsToolProvider.definition(emotionSupported = true).function
 
         assertEquals("speak", function.name)
         assertEquals(listOf("text"), function.parameters.required)
         assertEquals("string", function.parameters.properties.getValue("text").type)
+        assertEquals("string", function.parameters.properties.getValue("emotion").type)
+        assertTrue(function.description.contains("emotion"))
+        assertFalse(
+            TtsToolProvider.definition(emotionSupported = false)
+                .function.parameters.properties.containsKey("emotion"),
+        )
     }
 
     @Test
-    fun `spoken text is parsed and trimmed from the arguments`() {
+    fun `spoken text and tone are parsed and trimmed from the arguments`() {
         assertEquals("你好世界", TtsToolProvider.parseText("""{"text":"  你好世界  "}"""))
         assertNull(TtsToolProvider.parseText("""{"text":"   "}"""))
-        assertNull(TtsToolProvider.parseText("{}"))
         assertNull(TtsToolProvider.parseText("not json"))
+        assertEquals("开心", TtsToolProvider.parseEmotion("""{"text":"hi","emotion":" 开心 "}"""))
+        assertNull(TtsToolProvider.parseEmotion("""{"text":"hi"}"""))
+        assertNull(TtsToolProvider.parseEmotion("""{"emotion":"  "}"""))
     }
 }

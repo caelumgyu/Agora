@@ -38,6 +38,12 @@ data class TtsRequest(
     val language: String,
     /** Speech rate, 0.5–2.0. Ignored by transports without a speed control (DashScope). */
     val speed: Float = 1.0f,
+    /**
+     * Optional tone for this line. On IndexTTS servers it becomes `extra_params.emo_text` with
+     * `use_emo_text` enabled; the literal `auto` asks the server to infer the emotion from the
+     * spoken text itself. Other transports ignore it.
+     */
+    val emotion: String? = null,
 )
 
 /** A voice selectable by name: a built-in speaker or one uploaded to the server. */

@@ -58,22 +58,55 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
                 TtsProviderKind.OPENAI_SPEECH -> DEFAULT_TTS_MODEL_NAME
             }
 
-        internal fun definition(): ToolDefinition = ToolDefinition(function = ToolFunction(
-            name = TOOL_NAME,
-            description = "Read a message aloud to the user through text-to-speech. The audio plays immediately; never repeat this call just to show the text and never embed raw audio data. Write the exact words to speak yourself in `text` — they may differ from the written answer. Keep them short, natural and speech-friendly: plain sentences only, no Markdown, lists, code, URLs or emoji. Use it when the user asks you to speak or read something aloud, or when a spoken reply clearly fits the conversation.",
-            parameters = ToolParameters(
-                properties = mapOf(
-                    "text" to ToolProperty("string", "The exact words to read aloud.")
+        internal fun definition(emotionSupported: Boolean): ToolDefinition {
+            val description = buildString {
+                append(
+                    "Read a message aloud to the user through text-to-speech. The audio plays immediately; " +
+                        "never repeat this call just to show the text and never embed raw audio data. " +
+                        "Write the exact words to speak yourself in `text` — they may differ from the written " +
+                        "answer. Keep them short, natural and speech-friendly: plain sentences only, no " +
+                        "Markdown, lists, code, URLs or emoji. Use it when the user asks you to speak or read " +
+                        "something aloud, or when a spoken reply clearly fits the conversation.",
+                )
+                if (emotionSupported) {
+                    append(
+                        " When the tone matters, set `emotion` to a short description (for example 开心, " +
+                            "疲惫, 兴奋地) or \"auto\" to let the server infer it from the text.",
+                    )
+                }
+            }
+            val properties = buildMap {
+                put("text", ToolProperty("string", "The exact words to read aloud."))
+                if (emotionSupported) {
+                    put(
+                        "emotion",
+                        ToolProperty(
+                            "string",
+                            "Optional tone, e.g. 开心 or 难过、语速缓慢; \"auto\" infers it from the text.",
+                        ),
+                    )
+                }
+            }
+            return ToolDefinition(function = ToolFunction(
+                name = TOOL_NAME,
+                description = description,
+                parameters = ToolParameters(
+                    properties = properties,
+                    required = listOf("text"),
                 ),
-                required = listOf("text")
-            )
-        ))
+            ))
+        }
 
         /** The spoken line the model asked for; null when the argument is missing or blank. */
-        internal fun parseText(arguments: String): String? =
+        internal fun parseText(arguments: String): String? = parseArgument(arguments, "text")
+
+        /** Optional tone description; null when the argument is missing or blank. */
+        internal fun parseEmotion(arguments: String): String? = parseArgument(arguments, "emotion")
+
+        private fun parseArgument(arguments: String, key: String): String? =
             runCatching { Json.parseToJsonElement(arguments.ifBlank { "{}" }).jsonObject }
                 .getOrNull()
-                ?.get("text")
+                ?.get(key)
                 ?.let { (it as? JsonPrimitive)?.contentOrNull }
                 ?.trim()
                 ?.takeIf { it.isNotBlank() }
@@ -83,7 +116,18 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
     private val client = TtsClient()
 
     override fun definitions(ctx: GenerationContext): List<ToolDefinition> =
-        if (isConfigured(ctx)) listOf(definition()) else emptyList()
+        if (isConfigured(ctx)) {
+            // DashScope's Qwen-TTS has no text-based tone control; only offer the argument where
+            // the OpenAI-compatible path can forward it (IndexTTS uses QwenEmotion for it).
+            listOf(
+                definition(
+                    emotionSupported = TtsProviders.kindFor(ctx.ttsBaseUrl) ==
+                        TtsProviderKind.OPENAI_SPEECH,
+                ),
+            )
+        } else {
+            emptyList()
+        }
 
     override fun handles(name: String): Boolean = name == TOOL_NAME
 
@@ -121,6 +165,7 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
                     refAudioUrl = ctx.ttsRefAudioUrl.takeIf { it.isNotBlank() },
                     language = ctx.ttsLanguage,
                     speed = ctx.ttsSpeed,
+                    emotion = parseEmotion(arguments),
                 ),
             )
             val stored = try {
