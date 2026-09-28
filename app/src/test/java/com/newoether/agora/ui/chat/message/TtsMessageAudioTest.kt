@@ -109,31 +109,37 @@ class TtsMessageAudioTest {
     }
 
     @Test
-    fun `clips are grouped per run in call order without duplicates`() {
-        val clips = ttsClipsByRun(
-            listOf(
-                message(
-                    "a",
-                    "run-1",
-                    listOf(speakSegment("call-1", text = "第一句"), speakSegment("call-2", text = "第二句")),
-                ),
-                message("b", "run-2", listOf(speakSegment("call-3", text = "另一轮"))),
-                message("c", "run-1", listOf(speakSegment("call-1", text = "第一句"))),
-            ),
+    fun `rendered payloads expose their clips and merge keeps call order`() {
+        val toolRow = message(
+            "a",
+            "run-1",
+            listOf(speakSegment("call-1", text = "第一句"), speakSegment("call-2", text = "第二句")),
         )
+        val resultRow = message("b", "run-1", listOf(speakSegment("call-2", text = "第二句")))
+        val answerRow = message("c", "run-1", listOf(MessageSegment(type = "answer", content = "hi")))
 
-        assertEquals(setOf("run-1", "run-2"), clips.keys)
-        assertEquals(listOf("call-1", "call-2"), clips.getValue("run-1").map(TtsAudioClip::callId))
-        assertEquals(listOf("call-3"), clips.getValue("run-2").map(TtsAudioClip::callId))
+        assertNull(renderedTtsClips(answerRow))
+        val first = renderedTtsClips(toolRow)!!
+        assertEquals(listOf("call-1", "call-2"), first.map(TtsAudioClip::callId))
+
+        // The result row repeats the same clip; merging must not duplicate or reorder it.
+        val merged = mergeTtsClips(first, renderedTtsClips(resultRow)!!)
+        assertEquals(listOf("call-1", "call-2"), merged.map(TtsAudioClip::callId))
+        assertEquals(first, merged)
+        assertEquals(first, mergeTtsClips(null, first))
+        assertEquals(first, mergeTtsClips(first, emptyList()))
     }
 
     @Test
-    fun `clips without a run stay out of the per-run lookup`() {
-        val clips = ttsClipsByRun(
-            listOf(message("a", null, listOf(speakSegment("call-1")))),
-        )
+    fun `later rows append only clips the index does not know`() {
+        val known = renderedTtsClips(message("a", "run-1", listOf(speakSegment("call-1"))))!!
+        val later = renderedTtsClips(
+            message("b", "run-1", listOf(speakSegment("call-1"), speakSegment("call-2"))),
+        )!!
 
-        assertTrue(clips.isEmpty())
-        assertNull(clips["run-1"])
+        assertEquals(
+            listOf("call-1", "call-2"),
+            mergeTtsClips(known, later).map(TtsAudioClip::callId),
+        )
     }
 }

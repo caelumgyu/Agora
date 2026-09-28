@@ -29,7 +29,7 @@ private val ttsClipJson = Json { ignoreUnknownKeys = true }
  *
  * A tool round repeats the same structured result on the model call row and on the result row, so
  * clips are deduplicated by `toolCallId` — the first occurrence (the call row, which preserves the
- * model's call order) wins.
+ * model's call order) wins. Used by auto-play, which only ever sees the live payloads.
  */
 internal fun ttsAudioClips(messages: List<ChatMessage>): List<TtsAudioClip> {
     val clips = LinkedHashMap<String, TtsAudioClip>()
@@ -43,20 +43,33 @@ internal fun ttsAudioClips(messages: List<ChatMessage>): List<TtsAudioClip> {
 }
 
 /**
- * Speech clips per run, in call order. The message action bar replays the whole sequence a run
- * spoke, and auto-play enqueues every newly arriving clip in the same order.
+ * Speech clips this rendered message carries, in call order; null when it has none.
+ *
+ * History rows are payload-free stubs until they are hydrated for rendering, so the clip index is
+ * fed from every message the list actually composes instead of from `allMessages` — that keeps
+ * the replay button working for earlier turns (within the context window) as soon as their turn
+ * has been shown once.
  */
-internal fun ttsClipsByRun(messages: List<ChatMessage>): Map<String, List<TtsAudioClip>> {
-    val clipsByRun = LinkedHashMap<String, MutableList<TtsAudioClip>>()
-    for (message in messages) {
-        val runId = message.runId?.takeIf { it.isNotBlank() } ?: continue
-        for (segment in message.segments.orEmpty()) {
-            val clip = clipForSegment(segment) ?: continue
-            val runClips = clipsByRun.getOrPut(runId) { mutableListOf() }
-            if (runClips.none { it.callId == clip.callId }) runClips += clip
-        }
+internal fun renderedTtsClips(message: ChatMessage): List<TtsAudioClip>? {
+    val segments = message.segments ?: return null
+    if (segments.none { it.type == "tool" && it.toolName == SPEAK_TOOL_NAME }) return null
+    val clips = LinkedHashMap<String, TtsAudioClip>()
+    for (segment in segments) {
+        val clip = clipForSegment(segment) ?: continue
+        clips.putIfAbsent(clip.callId, clip)
     }
-    return clipsByRun
+    return clips.values.toList().takeIf { it.isNotEmpty() }
+}
+
+/** Appends [incoming] clips that [existing] does not know yet, preserving first-seen call order. */
+internal fun mergeTtsClips(
+    existing: List<TtsAudioClip>?,
+    incoming: List<TtsAudioClip>,
+): List<TtsAudioClip> {
+    if (existing.isNullOrEmpty()) return incoming
+    val known = existing.mapTo(hashSetOf(), TtsAudioClip::callId)
+    val additions = incoming.filter { it.callId !in known }
+    return if (additions.isEmpty()) existing else existing + additions
 }
 
 /**

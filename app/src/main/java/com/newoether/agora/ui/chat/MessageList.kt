@@ -59,7 +59,8 @@ import com.newoether.agora.ui.chat.message.REGENERATION_ABORT_RESTORE_DURATION_M
 import com.newoether.agora.ui.chat.message.REGENERATION_EXIT_DURATION_MS
 import com.newoether.agora.ui.chat.message.SegmentAppearanceRegistry
 import com.newoether.agora.ui.chat.message.TtsAudioClip
-import com.newoether.agora.ui.chat.message.ttsClipsByRun
+import com.newoether.agora.ui.chat.message.mergeTtsClips
+import com.newoether.agora.ui.chat.message.renderedTtsClips
 import com.newoether.agora.ui.motion.LocalAgoraMotionPolicy
 import com.newoether.agora.viewmodel.BranchReplacementTransitionRequest
 import kotlinx.coroutines.Job
@@ -211,14 +212,13 @@ internal fun MessageList(
     val visibleProjectionKey = remember(messages) {
         messages.list.map(ChatMessage::toRunProjectionKey)
     }
-    val allMessagesPresentation = remember(allMessages) {
-        // One deep comparison per recomposition serves both the structural run projection keys and
-        // the speech clips: the replay button must appear as soon as a `speak` result lands, and
-        // that result does not change the structural key.
-        allMessages.list.map(ChatMessage::toRunProjectionKey) to ttsClipsByRun(allMessages.list)
+    val allProjectionKey = remember(allMessages) {
+        allMessages.list.map(ChatMessage::toRunProjectionKey)
     }
-    val allProjectionKey = allMessagesPresentation.first
-    val ttsClipsByRunId = allMessagesPresentation.second
+    // Speech clips are indexed from messages this list actually composes: history rows arrive as
+    // payload-free stubs and only expose their tool segments once hydrated for rendering, so a
+    // conversation-wide scan would lose every earlier turn's audio.
+    val ttsClipsByRunId = remember(conversationId) { mutableStateMapOf<String, List<TtsAudioClip>>() }
     val inContextIds = contextRetainedMessageIds
 
     val activeMessageIds = remember(messages) { messages.list.mapTo(hashSetOf()) { message -> message.id } }
@@ -503,6 +503,12 @@ internal fun MessageList(
         val presentation =
             runPresentation[message.id] ?: retainedBranchReplacementPresentations[message.id]
         val ttsClips = message.runId?.let(ttsClipsByRunId::get).orEmpty()
+        SideEffect {
+            val runId = message.runId?.takeIf { it.isNotBlank() } ?: return@SideEffect
+            val incoming = renderedTtsClips(message) ?: return@SideEffect
+            val merged = mergeTtsClips(ttsClipsByRunId[runId], incoming)
+            if (ttsClipsByRunId[runId] != merged) ttsClipsByRunId[runId] = merged
+        }
         val animateLifecycleEntrance =
             !isRetainedBranchReplacementExit &&
             message.id != regenerationTransition?.targetUserMessageId &&
