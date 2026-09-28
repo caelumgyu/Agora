@@ -95,24 +95,18 @@ class SettingsManager(private val context: Context) {
             ?: ThinkingLevels.legacyBudgetTokens(pref[THINKING_LEVEL])
             ?: ThinkingLevels.DefaultBudgetTokens
     }
-    val openAiServiceTierEnabled: Flow<Boolean> =
-        context.dataStore.data.map { it[OPENAI_SERVICE_TIER_ENABLED] ?: false }
+    val openAiServiceTierEnabled: Flow<Boolean> = context.dataStore.data.map { it[OPENAI_SERVICE_TIER_ENABLED] ?: false }
     val openAiServiceTier: Flow<String> = context.dataStore.data.map { pref ->
         OpenAiServiceTiers.normalize(pref[OPENAI_SERVICE_TIER])
     }
-    val openAiResponsesApiEnabled: Flow<Boolean> =
-        context.dataStore.data.map { it[OPENAI_RESPONSES_API_ENABLED] ?: false }
+    val openAiResponsesApiEnabled: Flow<Boolean> = context.dataStore.data.map { it[OPENAI_RESPONSES_API_ENABLED] ?: false }
     val titleGenerationEnabled: Flow<Boolean> = context.dataStore.data.map { it[TITLE_GENERATION_ENABLED] ?: true }
     val titleGenerationModel: Flow<String?> = context.dataStore.data.map { it[TITLE_GENERATION_MODEL] }
     val titleGenerationPrompt: Flow<String> = context.dataStore.data.map { pref ->
         pref[TITLE_GENERATION_PROMPT]?.takeIf { it.isNotBlank() } ?: BuiltInPrompts.TITLE_GENERATION_SYSTEM
     }
-    val titleGenerationNotificationsEnabled: Flow<Boolean> = context.dataStore.data.map {
-        it[TITLE_GENERATION_NOTIFICATIONS_ENABLED] ?: true
-    }
-    val imageTranscriptionEnabled: Flow<Boolean> = context.dataStore.data.map {
-        it[IMAGE_TRANSCRIPTION_ENABLED] ?: true
-    }
+    val titleGenerationNotificationsEnabled: Flow<Boolean> = context.dataStore.data.map { it[TITLE_GENERATION_NOTIFICATIONS_ENABLED] ?: true }
+    val imageTranscriptionEnabled: Flow<Boolean> = context.dataStore.data.map { it[IMAGE_TRANSCRIPTION_ENABLED] ?: true }
     val imageTranscriptionEnabledModels: Flow<Set<String>> = context.dataStore.data.map { it[IMAGE_TRANSCRIPTION_ENABLED_MODELS] ?: emptySet() }
     val imageTranscriptionModel: Flow<String?> = context.dataStore.data.map { it[IMAGE_TRANSCRIPTION_MODEL] }
     val imageTranscriptionBatchSize: Flow<Int> = context.dataStore.data.map { it[IMAGE_TRANSCRIPTION_BATCH_SIZE] ?: 3 }
@@ -153,6 +147,16 @@ class SettingsManager(private val context: Context) {
     // Selected image model "Provider:modelId" (null = none chosen). Creds reused from that provider.
     val imageGenModel: Flow<String?> = context.dataStore.data.map { it[IMAGE_GEN_MODEL] }
     val imageGenSize: Flow<String> = context.dataStore.data.map { it[IMAGE_GEN_SIZE] ?: "1024x1024" }
+
+    // ── TTS (IndexTTS / OpenAI-compatible speech endpoint) ──────
+    val ttsEnabled: Flow<Boolean> = context.dataStore.data.map { it[TTS_ENABLED] ?: false }
+    val ttsBaseUrl: Flow<String> = context.dataStore.data.map { it[TTS_BASE_URL] ?: "" }
+    val ttsApiKey: Flow<String> = context.dataStore.data.map { pref -> com.newoether.agora.util.SecretCrypto.decrypt(pref[TTS_API_KEY] ?: "") }
+    val ttsModelName: Flow<String> = context.dataStore.data.map { it[TTS_MODEL_NAME] ?: "" }
+    val ttsVoiceName: Flow<String> = context.dataStore.data.map { it[TTS_VOICE_NAME] ?: "" }
+    val ttsRefAudioUrl: Flow<String> = context.dataStore.data.map { it[TTS_REF_AUDIO_URL] ?: "" }
+    val ttsLanguage: Flow<String> = context.dataStore.data.map { pref -> normalizeTtsLanguage(pref[TTS_LANGUAGE]) }
+    val ttsSpeed: Flow<Float> = context.dataStore.data.map { pref -> normalizeTtsSpeed(pref[TTS_SPEED]?.toFloatOrNull() ?: DEFAULT_TTS_SPEED) }
     val searchContextWindow: Flow<Int> = context.dataStore.data.map { it[SEARCH_CONTEXT_WINDOW] ?: 8 }
     val searchMatchLimit: Flow<Int> = context.dataStore.data.map { it[SEARCH_MATCH_LIMIT] ?: 10 }
     val ragThreshold: Flow<Float> = context.dataStore.data.map { it[RAG_THRESHOLD]?.toFloatOrNull() ?: 0.5f }
@@ -164,8 +168,7 @@ class SettingsManager(private val context: Context) {
     val conversationSettings: Flow<Map<String, ConversationSettings>> =
         context.dataStore.data.map { preferences -> decodeConversationSettings(preferences, json) }
     val autoCacheEnabled: Flow<Boolean> = context.dataStore.data.map { it[AUTO_CACHE_ENABLED] ?: true }
-    val showUncachedNotification: Flow<Boolean> =
-        context.dataStore.data.map { it[SHOW_UNCACHED_NOTIFICATION] ?: true }
+    val showUncachedNotification: Flow<Boolean> = context.dataStore.data.map { it[SHOW_UNCACHED_NOTIFICATION] ?: true }
     val autoUpdateCheck: Flow<Boolean> = context.dataStore.data.map { it[AUTO_UPDATE_CHECK] ?: true }
     val lastUpdateCheckTime: Flow<Long> = context.dataStore.data.map { it[LAST_UPDATE_CHECK_TIME] ?: 0L }
     val localChatModels: Flow<List<LocalChatModelConfig>> = modelPreferenceStore.localChatModels
@@ -179,8 +182,7 @@ class SettingsManager(private val context: Context) {
 
     val showDocumentationFab: Flow<Boolean> = context.dataStore.data.map { it[SHOW_DOCUMENTATION_FAB] ?: true }
     /** Release-build feature gate kept local to this installation. */
-    val developerOptionsEnabled: Flow<Boolean> =
-        context.dataStore.data.map { it[DEVELOPER_OPTIONS_ENABLED] ?: false }
+    val developerOptionsEnabled: Flow<Boolean> = context.dataStore.data.map { it[DEVELOPER_OPTIONS_ENABLED] ?: false }
     val debugModelEnabled: Flow<Boolean> = context.dataStore.data.map { preferences ->
         (preferences[DEVELOPER_OPTIONS_ENABLED] ?: false) &&
             (preferences[DEBUG_MODEL_ENABLED] ?: false)
@@ -201,8 +203,7 @@ class SettingsManager(private val context: Context) {
     // Confirm before the model runs state-changing commands on remote shell servers. Default on.
     val shellConfirmEnabled: Flow<Boolean> = context.dataStore.data.map { it[SHELL_CONFIRM_ENABLED] ?: true }
     val askUserEnabled: Flow<Boolean> = context.dataStore.data.map { it[ASK_USER_ENABLED] ?: true }
-    val shellDevices: Flow<List<ShellDeviceConfig>> =
-        context.dataStore.data.map { preferences -> decodeEncryptedShellDevices(preferences, json) }
+    val shellDevices: Flow<List<ShellDeviceConfig>> = context.dataStore.data.map { preferences -> decodeEncryptedShellDevices(preferences, json) }
     val mcpServers: Flow<List<McpServerConfig>> = context.dataStore.data.map { pref ->
         val jsonStr = com.newoether.agora.util.SecretCrypto.decrypt(pref[MCP_SERVERS_JSON] ?: "[]")
         try {
@@ -213,8 +214,7 @@ class SettingsManager(private val context: Context) {
         }
     }
     val sandboxEnabled: Flow<Boolean> = context.dataStore.data.map { it[SANDBOX_ENABLED] ?: false }
-    val sandboxSharedStorageEnabled: Flow<Boolean> =
-        context.dataStore.data.map { it[SANDBOX_SHARED_STORAGE_ENABLED] ?: false }
+    val sandboxSharedStorageEnabled: Flow<Boolean> = context.dataStore.data.map { it[SANDBOX_SHARED_STORAGE_ENABLED] ?: false }
 
     val themeMode: Flow<String> = context.dataStore.data.map { it[THEME_MODE] ?: "FOLLOW_DEVICE" }
     val amoledEnabled: Flow<Boolean> = context.dataStore.data.map { it[AMOLED_ENABLED] ?: false }
@@ -488,6 +488,14 @@ class SettingsManager(private val context: Context) {
     suspend fun saveImageGenSize(size: String) {
         context.dataStore.edit { it[IMAGE_GEN_SIZE] = size }
     }
+    suspend fun saveTtsEnabled(enabled: Boolean) { context.dataStore.edit { it[TTS_ENABLED] = enabled } }
+    suspend fun saveTtsBaseUrl(url: String) { context.dataStore.edit { it[TTS_BASE_URL] = url.trim() } }
+    suspend fun saveTtsApiKey(key: String) { context.dataStore.edit { prefs -> if (key.isBlank()) prefs.remove(TTS_API_KEY) else prefs[TTS_API_KEY] = com.newoether.agora.util.SecretCrypto.encrypt(key.trim()) } }
+    suspend fun saveTtsModelName(name: String) { context.dataStore.edit { it[TTS_MODEL_NAME] = name.trim() } }
+    suspend fun saveTtsVoiceName(name: String) { context.dataStore.edit { it[TTS_VOICE_NAME] = name.trim() } }
+    suspend fun saveTtsRefAudioUrl(url: String) { context.dataStore.edit { it[TTS_REF_AUDIO_URL] = url.trim() } }
+    suspend fun saveTtsLanguage(language: String) { context.dataStore.edit { it[TTS_LANGUAGE] = normalizeTtsLanguage(language) } }
+    suspend fun saveTtsSpeed(speed: Float) { context.dataStore.edit { it[TTS_SPEED] = normalizeTtsSpeed(speed).toString() } }
     suspend fun saveSearchMatchLimit(n: Int) {
         context.dataStore.edit { it[SEARCH_MATCH_LIMIT] = n }
     }

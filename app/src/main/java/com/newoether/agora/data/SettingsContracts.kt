@@ -95,6 +95,23 @@ internal val WEB_SEARCH_PROVIDERS = setOf(
 internal fun normalizeWebSearchProvider(provider: String?): String =
     provider?.trim()?.lowercase()?.takeIf(WEB_SEARCH_PROVIDERS::contains) ?: "duckduckgo"
 
+// ── TTS (IndexTTS / OpenAI-compatible speech endpoint) ──────
+/** Languages IndexTTS-2.5 accepts via `extra_params.lang`; "zhen" is the vLLM-Omni
+ *  Chinese-English mixed preprocessing mode. */
+internal val TTS_LANGUAGES = setOf("zh", "en", "ja", "es", "ar", "zhen")
+
+internal const val DEFAULT_TTS_LANGUAGE = "zh"
+internal const val TTS_MIN_SPEED = 0.5f
+internal const val TTS_MAX_SPEED = 2.0f
+internal const val DEFAULT_TTS_SPEED = 1.0f
+/** Model id served by the vLLM-Omni IndexTTS-2.5 deployment (overridable in settings). */
+internal const val DEFAULT_TTS_MODEL_NAME = "IndexTeam/IndexTTS-2.5"
+
+internal fun normalizeTtsLanguage(language: String?): String =
+    language?.trim()?.lowercase()?.takeIf(TTS_LANGUAGES::contains) ?: DEFAULT_TTS_LANGUAGE
+
+internal fun normalizeTtsSpeed(speed: Float): Float = speed.coerceIn(TTS_MIN_SPEED, TTS_MAX_SPEED)
+
 internal fun decodeWebSearchApiKeys(preferences: Preferences, json: Json): Map<String, String> {
     val raw = SecretCrypto.decrypt(preferences[WEB_SEARCH_API_KEYS_JSON] ?: "{}")
     return try {

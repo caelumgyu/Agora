@@ -450,6 +450,7 @@ nav:
       - Title Generation: title-generation.md
   - Image Transcription: transcription.md
   - Image Generation: image-generation.md
+  - Text to Speech: tts.md
   - System Prompts: system-prompts.md
   - Agentic Tools:
       - Overview: tools.md

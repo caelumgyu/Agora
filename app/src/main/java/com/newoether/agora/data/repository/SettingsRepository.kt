@@ -12,6 +12,8 @@ import com.newoether.agora.data.DEFAULT_CONTEXT_COMPACT_RETAIN_COUNT
 import com.newoether.agora.data.DEFAULT_CONTEXT_COMPACT_THRESHOLD_PERCENT
 import com.newoether.agora.data.DEFAULT_DYNAMIC_COLOR
 import com.newoether.agora.data.DEFAULT_LOCAL_MODEL_IDLE_RETENTION_MINUTES
+import com.newoether.agora.data.DEFAULT_TTS_LANGUAGE
+import com.newoether.agora.data.DEFAULT_TTS_SPEED
 import com.newoether.agora.data.DEFAULT_LOCAL_LOW_CONTEXT_MODE_ENABLED
 import com.newoether.agora.data.DEFAULT_SCHEME_STYLE
 import com.newoether.agora.data.ConversationSettings
@@ -117,25 +119,14 @@ class SettingsRepository(
     val activeApiKeyIds: StateFlow<Map<String, String>> = hot(settingsManager.activeApiKeyIds, emptyMap())
     val systemPrompts: StateFlow<List<SystemPromptEntry>> = hot(settingsManager.systemPrompts, emptyList())
     val activeSystemPromptId: StateFlow<String?> = hot(settingsManager.activeSystemPromptId, null)
-    val maxContextWindow: StateFlow<Int> =
-        hot(settingsManager.maxContextWindow, ContextBudget.DEFAULT_TOKENS)
+    val maxContextWindow: StateFlow<Int> = hot(settingsManager.maxContextWindow, ContextBudget.DEFAULT_TOKENS)
     val visualizeContextRollout: StateFlow<Boolean> = hot(settingsManager.visualizeContextRollout, false)
-    val contextCompactEnabled: StateFlow<Boolean> = hot(
-        settingsManager.contextCompactEnabled,
-        DEFAULT_CONTEXT_COMPACT_ENABLED,
-    )
+    val contextCompactEnabled: StateFlow<Boolean> = hot(settingsManager.contextCompactEnabled, DEFAULT_CONTEXT_COMPACT_ENABLED)
     val contextCompactModel: StateFlow<String?> = hot(settingsManager.contextCompactModel, null)
     val contextCompactPrompt: StateFlow<String> = hot(settingsManager.contextCompactPrompt, BuiltInPrompts.CONTEXT_COMPACT_SYSTEM)
-    val contextCompactRetainCount: StateFlow<Int> = hot(
-        settingsManager.contextCompactRetainCount,
-        DEFAULT_CONTEXT_COMPACT_RETAIN_COUNT,
-    )
-    val contextCompactPreserveSystemPrompt: StateFlow<Boolean> =
-        hot(settingsManager.contextCompactPreserveSystemPrompt, DEFAULT_CONTEXT_COMPACT_PRESERVE_SYSTEM_PROMPT)
-    val contextCompactThresholdPercent: StateFlow<Int> = hot(
-        settingsManager.contextCompactThresholdPercent,
-        DEFAULT_CONTEXT_COMPACT_THRESHOLD_PERCENT,
-    )
+    val contextCompactRetainCount: StateFlow<Int> = hot(settingsManager.contextCompactRetainCount, DEFAULT_CONTEXT_COMPACT_RETAIN_COUNT)
+    val contextCompactPreserveSystemPrompt: StateFlow<Boolean> = hot(settingsManager.contextCompactPreserveSystemPrompt, DEFAULT_CONTEXT_COMPACT_PRESERVE_SYSTEM_PROMPT)
+    val contextCompactThresholdPercent: StateFlow<Int> = hot(settingsManager.contextCompactThresholdPercent, DEFAULT_CONTEXT_COMPACT_THRESHOLD_PERCENT)
     val codeExecutionEnabled: StateFlow<Boolean> = hot(settingsManager.codeExecutionEnabled, false)
     val googleSearchEnabled: StateFlow<Boolean> = hot(settingsManager.googleSearchEnabled, false)
     val thinkingEnabled: StateFlow<Boolean> = hot(settingsManager.thinkingEnabled, true)
@@ -144,18 +135,14 @@ class SettingsRepository(
     val thinkingBudgetTokens: StateFlow<Int> = hot(settingsManager.thinkingBudgetTokens, 4096)
     val openAiServiceTierEnabled: StateFlow<Boolean> = hot(settingsManager.openAiServiceTierEnabled, false)
     val openAiServiceTier: StateFlow<String> = hot(settingsManager.openAiServiceTier, OpenAiServiceTiers.AUTO)
-    val openAiResponsesApiEnabled: StateFlow<Boolean> =
-        hot(settingsManager.openAiResponsesApiEnabled, false)
+    val openAiResponsesApiEnabled: StateFlow<Boolean> = hot(settingsManager.openAiResponsesApiEnabled, false)
     val providerBaseUrls: StateFlow<Map<String, String>> = hot(settingsManager.providerBaseUrls, emptyMap())
-    val customEndpointResolutions: StateFlow<Map<String, CustomEndpointResolution>> =
-        hot(settingsManager.customEndpointResolutions, emptyMap())
+    val customEndpointResolutions: StateFlow<Map<String, CustomEndpointResolution>> = hot(settingsManager.customEndpointResolutions, emptyMap())
     val titleGenerationEnabled: StateFlow<Boolean> = hot(settingsManager.titleGenerationEnabled, true)
     val titleGenerationModel: StateFlow<String?> = hot(settingsManager.titleGenerationModel, null)
     val titleGenerationPrompt: StateFlow<String> = hot(settingsManager.titleGenerationPrompt, BuiltInPrompts.TITLE_GENERATION_SYSTEM)
-    val titleGenerationNotificationsEnabled: StateFlow<Boolean> =
-        hot(settingsManager.titleGenerationNotificationsEnabled, true)
-    val imageTranscriptionEnabled: StateFlow<Boolean> =
-        hot(settingsManager.imageTranscriptionEnabled, true)
+    val titleGenerationNotificationsEnabled: StateFlow<Boolean> = hot(settingsManager.titleGenerationNotificationsEnabled, true)
+    val imageTranscriptionEnabled: StateFlow<Boolean> = hot(settingsManager.imageTranscriptionEnabled, true)
     val imageTranscriptionEnabledModels: StateFlow<Set<String>> = hot(settingsManager.imageTranscriptionEnabledModels, emptySet())
     val imageTranscriptionModel: StateFlow<String?> = hot(settingsManager.imageTranscriptionModel, null)
     val imageTranscriptionBatchSize: StateFlow<Int> = hot(settingsManager.imageTranscriptionBatchSize, 3)
@@ -183,16 +170,21 @@ class SettingsRepository(
     val imageGenEnabled: StateFlow<Boolean> = hot(settingsManager.imageGenEnabled, false)
     val imageGenModel: StateFlow<String?> = hot(settingsManager.imageGenModel, null)
     val imageGenSize: StateFlow<String> = hot(settingsManager.imageGenSize, "1024x1024")
+    val ttsEnabled: StateFlow<Boolean> = hot(settingsManager.ttsEnabled, false)
+    val ttsBaseUrl: StateFlow<String> = hot(settingsManager.ttsBaseUrl, "")
+    val ttsApiKey: StateFlow<String> = hot(settingsManager.ttsApiKey, "")
+    val ttsModelName: StateFlow<String> = hot(settingsManager.ttsModelName, "")
+    val ttsVoiceName: StateFlow<String> = hot(settingsManager.ttsVoiceName, "")
+    val ttsRefAudioUrl: StateFlow<String> = hot(settingsManager.ttsRefAudioUrl, "")
+    val ttsLanguage: StateFlow<String> = hot(settingsManager.ttsLanguage, DEFAULT_TTS_LANGUAGE)
+    val ttsSpeed: StateFlow<Float> = hot(settingsManager.ttsSpeed, DEFAULT_TTS_SPEED)
     val showDocumentationFab: StateFlow<Boolean> = hot(settingsManager.showDocumentationFab, true)
-    val developerOptionsEnabled: StateFlow<Boolean> =
-        hot(settingsManager.developerOptionsEnabled, false)
-    val debugModelEnabled: StateFlow<Boolean> =
-        hot(settingsManager.debugModelEnabled, false)
+    val developerOptionsEnabled: StateFlow<Boolean> = hot(settingsManager.developerOptionsEnabled, false)
+    val debugModelEnabled: StateFlow<Boolean> = hot(settingsManager.debugModelEnabled, false)
     val shellEnabled: StateFlow<Boolean> = hot(settingsManager.shellEnabled, false)
     val automationToolsEnabled: StateFlow<Boolean> = hot(settingsManager.automationToolsEnabled, false)
     val exactExecutionEnabled: StateFlow<Boolean> = hot(settingsManager.exactExecutionEnabled, false)
-    val automationWakeLockEnabled: StateFlow<Boolean> =
-        hot(settingsManager.automationWakeLockEnabled, false)
+    val automationWakeLockEnabled: StateFlow<Boolean> = hot(settingsManager.automationWakeLockEnabled, false)
     val proxyEnabled: StateFlow<Boolean> = hot(settingsManager.proxyEnabled, false)
     val proxyType: StateFlow<String> = hot(settingsManager.proxyType, "http")
     val proxyHost: StateFlow<String> = hot(settingsManager.proxyHost, com.newoether.agora.data.SettingsManager.DEFAULT_PROXY_HOST)
@@ -205,8 +197,7 @@ class SettingsRepository(
     val shellDevices: StateFlow<List<ShellDeviceConfig>> = hot(settingsManager.shellDevices, emptyList())
     val mcpServers: StateFlow<List<McpServerConfig>> = hot(settingsManager.mcpServers, emptyList())
     val sandboxEnabled: StateFlow<Boolean> = hot(settingsManager.sandboxEnabled, false)
-    val sandboxSharedStorageEnabled: StateFlow<Boolean> =
-        hot(settingsManager.sandboxSharedStorageEnabled, false)
+    val sandboxSharedStorageEnabled: StateFlow<Boolean> = hot(settingsManager.sandboxSharedStorageEnabled, false)
     val defaultTemperature: StateFlow<Float?> = hot(settingsManager.defaultTemperature, null)
     val defaultMaxTokens: StateFlow<Int?> = hot(settingsManager.defaultMaxTokens, null)
     val defaultTopP: StateFlow<Float?> = hot(settingsManager.defaultTopP, null)
@@ -642,6 +633,14 @@ class SettingsRepository(
     fun setImageGenEnabled(enabled: Boolean) = scope.launch { settingsManager.saveImageGenEnabled(enabled) }
     fun setImageGenModel(model: String?) = scope.launch { settingsManager.saveImageGenModel(model) }
     fun setImageGenSize(size: String) = scope.launch { settingsManager.saveImageGenSize(size) }
+    fun setTtsEnabled(enabled: Boolean) = scope.launch { settingsManager.saveTtsEnabled(enabled) }
+    fun setTtsBaseUrl(url: String) = scope.launch { settingsManager.saveTtsBaseUrl(url) }
+    fun setTtsApiKey(key: String) = scope.launch { settingsManager.saveTtsApiKey(key) }
+    fun setTtsModelName(name: String) = scope.launch { settingsManager.saveTtsModelName(name) }
+    fun setTtsVoiceName(name: String) = scope.launch { settingsManager.saveTtsVoiceName(name) }
+    fun setTtsRefAudioUrl(url: String) = scope.launch { settingsManager.saveTtsRefAudioUrl(url) }
+    fun setTtsLanguage(language: String) = scope.launch { settingsManager.saveTtsLanguage(language) }
+    fun setTtsSpeed(speed: Float) = scope.launch { settingsManager.saveTtsSpeed(speed) }
     fun setShowDocumentationFab(enabled: Boolean) = scope.launch { settingsManager.saveShowDocumentationFab(enabled) }
     fun setDeveloperOptionsEnabled(enabled: Boolean) =
         scope.launch { settingsManager.saveDeveloperOptionsEnabled(enabled) }
