@@ -35,6 +35,8 @@ import com.newoether.agora.api.tts.TtsRequest
 import com.newoether.agora.api.tts.TtsServerConfig
 import com.newoether.agora.data.DEFAULT_TTS_MODEL_NAME
 import com.newoether.agora.ui.common.PersistedSliderFeedbackGate
+import com.newoether.agora.ui.components.AgoraDropdownMenuItem
+import com.newoether.agora.ui.components.AgoraExposedDropdownMenu
 import com.newoether.agora.util.noOpBringIntoView
 import com.newoether.agora.viewmodel.ChatViewModel
 import androidx.media3.common.MediaItem
@@ -173,13 +175,12 @@ private fun TtsSelectField(
                             .fillMaxWidth(),
                         textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                     )
-                    ExposedDropdownMenu(
+                    AgoraExposedDropdownMenu(
                         expanded = menuExpanded,
                         onDismissRequest = { menuExpanded = false },
-                        shape = RoundedCornerShape(16.dp),
                     ) {
                         options.forEach { option ->
-                            DropdownMenuItem(
+                            AgoraDropdownMenuItem(
                                 text = { Text(option) },
                                 onClick = {
                                     state.edit { replace(0, length, option) }
