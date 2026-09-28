@@ -65,6 +65,14 @@
     <string name="tts_replay_audio">重放音频</string>
     <string name="tts_stop_audio">停止播放</string>
     <string name="tts_dashscope_hint">填写系统音色（如 Cherry）；此处不自动检测模型与音色。</string>
+    <string name="tts_voice_upload">上传本地音频</string>
+    <string name="tts_voice_upload_desc">从本机选择一段录音，注册为服务器上的命名音色。</string>
+    <string name="tts_voice_upload_name">音色名称</string>
+    <string name="tts_voice_upload_consent">我确认已获得该说话人的声音克隆授权。</string>
+    <string name="tts_voice_upload_action">上传</string>
+    <string name="tts_voice_upload_status">正在上传…</string>
+    <string name="tts_voice_upload_ok">音色「%1$s」上传成功</string>
+    <string name="tts_voice_upload_failed">上传失败：%1$s</string>
     <string name="tts_enable_desc">连接兼容 IndexTTS 的服务器（例如 vLLM-Omni 部署的 IndexTTS 2.5），朗读任意文本</string>
     <string name="tts_server">服务器</string>
     <string name="tts_base_url">服务器地址</string>

@@ -142,4 +142,8 @@ internal class DashScopeTtsProvider : TtsProvider {
 
     /** DashScope system voices are documented values, not discoverable per deployment. */
     override suspend fun listVoices(config: TtsServerConfig): List<TtsVoice> = emptyList()
+
+    /** Qwen-TTS serves fixed system voices; voice registration exists only on IndexTTS servers. */
+    override suspend fun uploadVoice(config: TtsServerConfig, sample: File, name: String): TtsVoice =
+        throw TtsError("DashScope Qwen-TTS does not support uploading voice samples")
 }

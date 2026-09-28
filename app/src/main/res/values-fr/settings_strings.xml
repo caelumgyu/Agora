@@ -64,6 +64,14 @@
     <string name="tts_replay_audio">Réécouter l\'audio</string>
     <string name="tts_stop_audio">Arrêter l\'audio</string>
     <string name="tts_dashscope_hint">Saisissez une voix système (par ex. Cherry) ; les modèles et voix ne sont pas détectés ici.</string>
+    <string name="tts_voice_upload">Importer un extrait audio local</string>
+    <string name="tts_voice_upload_desc">Choisissez un enregistrement de cet appareil et enregistrez-le sur le serveur comme voix nommée.</string>
+    <string name="tts_voice_upload_name">Nom de la voix</string>
+    <string name="tts_voice_upload_consent">J\'ai le consentement de la personne pour cloner cette voix.</string>
+    <string name="tts_voice_upload_action">Importer</string>
+    <string name="tts_voice_upload_status">Importation…</string>
+    <string name="tts_voice_upload_ok">Voix « %1$s » importée</string>
+    <string name="tts_voice_upload_failed">Échec de l\'importation : %1$s</string>
     <string name="tts_enable_desc">Connecter un serveur compatible IndexTTS (p. ex. IndexTTS 2.5 servi par vLLM-Omni) et lire le texte à voix haute</string>
     <string name="tts_server">Serveur</string>
     <string name="tts_base_url">URL du serveur</string>

@@ -470,6 +470,18 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
                         },
                         {
                             if (!dashScopeTts) {
+                                TtsVoiceUploadItem(
+                                    baseUrl = baseUrl,
+                                    apiKey = apiKey,
+                                    onUploaded = { name ->
+                                        settings.setTtsVoiceName(name)
+                                        runDetection()
+                                    },
+                                )
+                            }
+                        },
+                        {
+                            if (!dashScopeTts) {
                                 TtsSettingField(
                                     title = stringResource(R.string.tts_ref_audio),
                                     initial = refAudioUrl,

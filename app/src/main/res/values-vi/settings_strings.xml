@@ -64,6 +64,14 @@
     <string name="tts_replay_audio">Phát lại âm thanh</string>
     <string name="tts_stop_audio">Dừng âm thanh</string>
     <string name="tts_dashscope_hint">Nhập giọng hệ thống (ví dụ: Cherry); model và giọng không được tự động phát hiện.</string>
+    <string name="tts_voice_upload">Tải lên âm thanh cục bộ</string>
+    <string name="tts_voice_upload_desc">Chọn bản ghi trên thiết bị này và đăng ký làm giọng có tên trên máy chủ.</string>
+    <string name="tts_voice_upload_name">Tên giọng</string>
+    <string name="tts_voice_upload_consent">Tôi đã có sự đồng ý của người nói để sao chép giọng này.</string>
+    <string name="tts_voice_upload_action">Tải lên</string>
+    <string name="tts_voice_upload_status">Đang tải lên…</string>
+    <string name="tts_voice_upload_ok">Đã tải lên giọng "%1$s"</string>
+    <string name="tts_voice_upload_failed">Tải lên thất bại: %1$s</string>
     <string name="tts_enable_desc">Kết nối máy chủ tương thích IndexTTS (ví dụ IndexTTS 2.5 qua vLLM-Omni) và đọc to văn bản</string>
     <string name="tts_server">Máy chủ</string>
     <string name="tts_base_url">URL máy chủ</string>

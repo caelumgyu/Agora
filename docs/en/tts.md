@@ -18,6 +18,8 @@ The **Test Synthesis** button synthesizes a short sample with the current settin
 
 The **Detect models and voices** row queries the server (`GET /v1/models` and `GET /v1/audio/voices`) and fills the Model Name and Voice Name dropdowns with what the server currently offers. Detection runs automatically when TTS is enabled or the server URL changes; tap the row to re-run it manually. Both fields still accept manual entry for values that are not in the list.
 
+**Upload a local audio clip** registers a recording from this device through `/v1/audio/voices` and makes it selectable by name afterwards (the server accepts 1–30 seconds, 10 MB max, and overwrites an existing name). This is the server-side voice library of IndexTTS/vLLM-Omni; DashScope system voices cannot be replaced this way.
+
 ## Letting the model speak
 
 Once enabled, Agora offers a `speak` tool to models that support tool calling. The model decides when to use it and **writes the spoken line itself** — usually a speech-friendly summary of the answer rather than the full message read verbatim.

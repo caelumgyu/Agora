@@ -64,6 +64,14 @@
     <string name="tts_replay_audio">Повторить аудио</string>
     <string name="tts_stop_audio">Остановить воспроизведение</string>
     <string name="tts_dashscope_hint">Укажите системный голос (например, Cherry); модели и голоса здесь не определяются.</string>
+    <string name="tts_voice_upload">Загрузить локальный аудиофайл</string>
+    <string name="tts_voice_upload_desc">Выберите запись на этом устройстве и зарегистрируйте её на сервере как именованный голос.</string>
+    <string name="tts_voice_upload_name">Имя голоса</string>
+    <string name="tts_voice_upload_consent">У меня есть согласие говорящего на клонирование этого голоса.</string>
+    <string name="tts_voice_upload_action">Загрузить</string>
+    <string name="tts_voice_upload_status">Загрузка…</string>
+    <string name="tts_voice_upload_ok">Голос «%1$s» загружен</string>
+    <string name="tts_voice_upload_failed">Не удалось загрузить: %1$s</string>
     <string name="tts_enable_desc">Подключить совместимый с IndexTTS сервер (напр. IndexTTS 2.5 через vLLM-Omni) и читать текст вслух</string>
     <string name="tts_server">Сервер</string>
     <string name="tts_base_url">URL сервера</string>

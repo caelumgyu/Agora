@@ -23,6 +23,9 @@ object TtsProviders {
     /** System voice the settings placeholder suggests. */
     const val DASHSCOPE_VOICE_EXAMPLE = "Cherry"
 
+    /** Upload bound shared by the settings UI and the server-side voice registration API. */
+    const val MAX_VOICE_SAMPLE_BYTES = 10L * 1024L * 1024L
+
     private val DASHSCOPE_HOSTS = listOf("dashscope.aliyuncs.com", "dashscope-intl.aliyuncs.com")
 
     /** Picks the transport for [baseUrl]; unknown or blank URLs stay OpenAI-compatible. */
@@ -50,4 +53,10 @@ internal interface TtsProvider {
 
     /** Voices selectable by name; empty when the protocol has no such listing. */
     suspend fun listVoices(config: TtsServerConfig): List<TtsVoice>
+
+    /**
+     * Register [sample] as the named voice [name] so later requests can select it like any
+     * other voice. Transports without a registration API throw [TtsError].
+     */
+    suspend fun uploadVoice(config: TtsServerConfig, sample: java.io.File, name: String): TtsVoice
 }

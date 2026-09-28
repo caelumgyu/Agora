@@ -64,6 +64,14 @@
     <string name="tts_replay_audio">Audio erneut abspielen</string>
     <string name="tts_stop_audio">Wiedergabe stoppen</string>
     <string name="tts_dashscope_hint">Systemstimme eingeben (z. B. Cherry); Modelle und Stimmen werden hier nicht erkannt.</string>
+    <string name="tts_voice_upload">Lokale Audiodatei hochladen</string>
+    <string name="tts_voice_upload_desc">Eine Aufnahme von diesem Gerät auswählen und auf dem Server als benannte Stimme registrieren.</string>
+    <string name="tts_voice_upload_name">Stimmenname</string>
+    <string name="tts_voice_upload_consent">Ich habe die Zustimmung der sprechenden Person zum Klonen dieser Stimme.</string>
+    <string name="tts_voice_upload_action">Hochladen</string>
+    <string name="tts_voice_upload_status">Wird hochgeladen…</string>
+    <string name="tts_voice_upload_ok">Stimme „%1$s“ hochgeladen</string>
+    <string name="tts_voice_upload_failed">Hochladen fehlgeschlagen: %1$s</string>
     <string name="tts_enable_desc">IndexTTS-kompatiblen Server verbinden, z. B. IndexTTS 2.5 über vLLM-Omni, und Texte vorlesen</string>
     <string name="tts_server">Server</string>
     <string name="tts_base_url">Server-URL</string>

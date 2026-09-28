@@ -64,6 +64,14 @@
     <string name="tts_replay_audio">音声を再生</string>
     <string name="tts_stop_audio">再生を停止</string>
     <string name="tts_dashscope_hint">システム音声を入力してください（例: Cherry）。モデルと音声は自動検出されません。</string>
+    <string name="tts_voice_upload">ローカル音声をアップロード</string>
+    <string name="tts_voice_upload_desc">この端末の録音を選び、名前付き音声としてサーバーに登録します。</string>
+    <string name="tts_voice_upload_name">音声名</string>
+    <string name="tts_voice_upload_consent">この音声を複製することについて話者の同意を得ています。</string>
+    <string name="tts_voice_upload_action">アップロード</string>
+    <string name="tts_voice_upload_status">アップロード中…</string>
+    <string name="tts_voice_upload_ok">音声「%1$s」をアップロードしました</string>
+    <string name="tts_voice_upload_failed">アップロードに失敗しました: %1$s</string>
     <string name="tts_enable_desc">IndexTTS 互換サーバーに接続（例：vLLM-Omni で提供する IndexTTS 2.5）してテキストを読み上げる</string>
     <string name="tts_server">サーバー</string>
     <string name="tts_base_url">サーバー URL</string>

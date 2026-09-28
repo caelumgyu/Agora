@@ -64,6 +64,14 @@
     <string name="tts_replay_audio">오디오 다시 재생</string>
     <string name="tts_stop_audio">재생 중지</string>
     <string name="tts_dashscope_hint">시스템 음성을 입력하세요(예: Cherry). 모델과 음성은 자동 감지되지 않습니다.</string>
+    <string name="tts_voice_upload">로컬 오디오 업로드</string>
+    <string name="tts_voice_upload_desc">이 기기의 녹음을 선택해 서버에 이름 있는 음성으로 등록합니다.</string>
+    <string name="tts_voice_upload_name">음성 이름</string>
+    <string name="tts_voice_upload_consent">이 음성을 복제할 발화자의 동의를 받았습니다.</string>
+    <string name="tts_voice_upload_action">업로드</string>
+    <string name="tts_voice_upload_status">업로드 중…</string>
+    <string name="tts_voice_upload_ok">"%1$s" 음성을 업로드했습니다</string>
+    <string name="tts_voice_upload_failed">업로드 실패: %1$s</string>
     <string name="tts_enable_desc">IndexTTS 호환 서버에 연결(예: vLLM-Omni의 IndexTTS 2.5)하고 텍스트를 소리 내어 읽기</string>
     <string name="tts_server">서버</string>
     <string name="tts_base_url">서버 URL</string>

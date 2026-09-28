@@ -35,4 +35,11 @@ class TtsClient {
     /** Voices selectable by name; empty for protocols without a listing. */
     suspend fun listVoices(config: TtsServerConfig): List<TtsVoice> =
         providerFor(config.baseUrl).listVoices(config)
+
+    /**
+     * Registers [sample] as the named voice [name] on the server, so later requests can select it
+     * like any other voice. Not every transport offers this.
+     */
+    suspend fun uploadVoice(config: TtsServerConfig, sample: File, name: String): TtsVoice =
+        providerFor(config.baseUrl).uploadVoice(config, sample, name)
 }

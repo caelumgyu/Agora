@@ -4,6 +4,8 @@ import android.content.Context
 import com.newoether.agora.api.HttpClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
@@ -11,7 +13,9 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.util.Base64
@@ -58,6 +62,35 @@ internal class OpenAiSpeechTtsProvider : TtsProvider {
                     },
                 )
             }.toString()
+        }
+
+        /** Consent token the voice-registration API records for app uploads. */
+        internal const val VOICE_UPLOAD_CONSENT = "user-authorized"
+
+        /** MIME type the upload API validates, derived from the picked file's extension. */
+        internal fun uploadMediaType(file: File): okhttp3.MediaType =
+            when (file.extension.lowercase()) {
+                "mp3", "mpeg" -> "audio/mpeg"
+                "ogg" -> "audio/ogg"
+                "flac" -> "audio/flac"
+                "m4a", "mp4" -> "audio/mp4"
+                "aac" -> "audio/aac"
+                "webm" -> "audio/webm"
+                else -> "audio/wav"
+            }.toMediaType()
+
+        /** `{"success":true,"voice":{...}}`; anything else is an error envelope. */
+        internal fun parseUploadedVoice(body: String): TtsVoice {
+            val root = TtsWire.parseJson(body)
+            val voice = root?.get("voice")?.jsonObject
+            val name = voice?.get("name")?.jsonPrimitive?.contentOrNull?.takeIf { it.isNotBlank() }
+            val failed = root?.get("success")?.jsonPrimitive?.booleanOrNull == false
+            if (failed || name == null) {
+                val message = (root?.get("message") as? JsonPrimitive)?.contentOrNull
+                    ?: (root?.get("error")?.jsonObject?.get("message") as? JsonPrimitive)?.contentOrNull
+                throw TtsError(message ?: "Unexpected voice upload response from the server")
+            }
+            return TtsVoice(name, voice["speaker_description"]?.jsonPrimitive?.contentOrNull)
         }
 
         /** Some servers answer with JSON (an audio URL, base64, or an error) even on success. */
@@ -163,5 +196,48 @@ internal class OpenAiSpeechTtsProvider : TtsProvider {
             }
             ?: emptyList()
         (builtIn.map { TtsVoice(it) } + uploaded).distinctBy { it.name }
+    }
+
+    /**
+     * Registers [sample] through `POST /v1/audio/voices` (the IndexTTS/vLLM-Omni voice library).
+     * The server stores the clip, and the chosen [name] becomes selectable right away.
+     */
+    override suspend fun uploadVoice(
+        config: TtsServerConfig,
+        sample: File,
+        name: String,
+    ): TtsVoice = withContext(Dispatchers.IO) {
+        val trimmed = name.trim()
+        if (trimmed.isBlank()) throw TtsError("Voice name must not be blank")
+        if (!sample.isFile) throw TtsError("The selected audio file is missing")
+        if (sample.length() > TtsProviders.MAX_VOICE_SAMPLE_BYTES) {
+            throw TtsError("Audio clip exceeds the 10 MB upload limit")
+        }
+        val endpoint = apiRoot(config.baseUrl) + "/audio/voices"
+        val headers = TtsWire.authHeaders(config)
+        TtsWire.guardCleartext(endpoint, headers)
+
+        val multipart = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("consent", VOICE_UPLOAD_CONSENT)
+            .addFormDataPart("name", trimmed)
+            .addFormDataPart("audio_sample", sample.name, sample.asRequestBody(uploadMediaType(sample)))
+            .build()
+        val httpRequest = Request.Builder()
+            .url(endpoint)
+            .post(multipart)
+            .apply { headers.forEach { (k, v) -> addHeader(k, v) } }
+            .build()
+
+        HttpClient.client.newBuilder()
+            .readTimeout(SYNTH_READ_TIMEOUT_MS, TimeUnit.MILLISECONDS)
+            .build()
+            .newCall(httpRequest).execute().use { response ->
+                val text = response.body?.string() ?: ""
+                if (!response.isSuccessful) {
+                    throw TtsError(TtsWire.friendlyError(response.code, text.toByteArray()), response.code)
+                }
+                parseUploadedVoice(text)
+            }
     }
 }

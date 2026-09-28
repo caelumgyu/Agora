@@ -1,5 +1,6 @@
 package com.newoether.agora.api.tts
 
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -8,6 +9,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
+import java.io.File
 
 class DashScopeTtsProviderTest {
 
@@ -90,5 +92,19 @@ class DashScopeTtsProviderTest {
             DashScopeTtsProvider.providerError("""{"code":"InvalidApiKey","message":"Invalid API-key provided"}"""),
         )
         assertNull(DashScopeTtsProvider.providerError("""{"output":{"audio":{"url":"https://x/a.wav"}}}"""))
+    }
+
+    @Test
+    fun `voice upload is rejected for dashscope`() = runTest {
+        try {
+            DashScopeTtsProvider().uploadVoice(
+                TtsServerConfig(baseUrl = "https://dashscope.aliyuncs.com"),
+                File("voice.wav"),
+                "Cherry",
+            )
+            fail("Expected DashScope voice upload to be rejected")
+        } catch (error: TtsError) {
+            assertTrue(error.message.orEmpty().contains("does not support"))
+        }
     }
 }

@@ -65,6 +65,14 @@
     <string name="tts_replay_audio">Replay audio</string>
     <string name="tts_stop_audio">Stop audio</string>
     <string name="tts_dashscope_hint">Enter a system voice such as Cherry; models and voices are not detected here.</string>
+    <string name="tts_voice_upload">Upload a local audio clip</string>
+    <string name="tts_voice_upload_desc">Pick a recording from this device and register it on the server as a named voice.</string>
+    <string name="tts_voice_upload_name">Voice name</string>
+    <string name="tts_voice_upload_consent">I have the speaker\'s consent to clone this voice.</string>
+    <string name="tts_voice_upload_action">Upload</string>
+    <string name="tts_voice_upload_status">Uploading…</string>
+    <string name="tts_voice_upload_ok">Voice "%1$s" uploaded</string>
+    <string name="tts_voice_upload_failed">Upload failed: %1$s</string>
     <string name="tts_enable_desc">Connect an IndexTTS-compatible server, e.g. IndexTTS 2.5 served by vLLM-Omni, and read text aloud</string>
     <string name="tts_server">Server</string>
     <string name="tts_base_url">Server URL</string>
