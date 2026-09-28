@@ -34,6 +34,28 @@ class TtsToolProviderTest {
     }
 
     @Test
+    fun `dashscope needs a named voice while the openai path also accepts a reference clip`() {
+        val dashScope = configured().copy(ttsBaseUrl = "https://dashscope.aliyuncs.com")
+
+        assertFalse(TtsToolProvider.isConfigured(dashScope.copy(ttsVoiceName = "")))
+        assertFalse(
+            TtsToolProvider.isConfigured(
+                dashScope.copy(ttsVoiceName = "", ttsRefAudioUrl = "file:///tmp/reference.wav"),
+            ),
+        )
+        assertTrue(TtsToolProvider.isConfigured(dashScope.copy(ttsVoiceName = "Cherry")))
+    }
+
+    @Test
+    fun `default model follows the detected transport`() {
+        assertEquals("qwen3-tts-flash", TtsToolProvider.defaultModel("https://dashscope.aliyuncs.com"))
+        assertEquals(
+            com.newoether.agora.data.DEFAULT_TTS_MODEL_NAME,
+            TtsToolProvider.defaultModel("http://192.168.1.4:8092"),
+        )
+    }
+
+    @Test
     fun `speak schema requires the spoken text`() {
         val function = TtsToolProvider.definition().function
 

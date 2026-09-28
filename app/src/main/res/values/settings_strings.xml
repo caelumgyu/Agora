@@ -64,6 +64,7 @@
     <string name="tts_enable">Enable Text to Speech</string>
     <string name="tts_replay_audio">Replay audio</string>
     <string name="tts_stop_audio">Stop audio</string>
+    <string name="tts_dashscope_hint">Enter a system voice such as Cherry; models and voices are not detected here.</string>
     <string name="tts_enable_desc">Connect an IndexTTS-compatible server, e.g. IndexTTS 2.5 served by vLLM-Omni, and read text aloud</string>
     <string name="tts_server">Server</string>
     <string name="tts_base_url">Server URL</string>

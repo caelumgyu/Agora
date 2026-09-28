@@ -64,6 +64,7 @@
     <string name="tts_enable">啟用文字轉語音</string>
     <string name="tts_replay_audio">重播音訊</string>
     <string name="tts_stop_audio">停止播放</string>
+    <string name="tts_dashscope_hint">填寫系統音色（如 Cherry）；此處不自動偵測模型與音色。</string>
     <string name="tts_enable_desc">連接相容 IndexTTS 的伺服器（例如以 vLLM-Omni 部署的 IndexTTS 2.5），朗讀任意文本</string>
     <string name="tts_server">伺服器</string>
     <string name="tts_base_url">伺服器位址</string>

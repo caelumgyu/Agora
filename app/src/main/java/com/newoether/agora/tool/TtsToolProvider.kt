@@ -7,6 +7,8 @@ import com.newoether.agora.api.ToolParameters
 import com.newoether.agora.api.ToolProperty
 import com.newoether.agora.api.tts.TtsClient
 import com.newoether.agora.api.tts.TtsError
+import com.newoether.agora.api.tts.TtsProviderKind
+import com.newoether.agora.api.tts.TtsProviders
 import com.newoether.agora.api.tts.TtsRequest
 import com.newoether.agora.api.tts.TtsServerConfig
 import com.newoether.agora.data.DEFAULT_TTS_MODEL_NAME
@@ -39,9 +41,22 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
         const val TOOL_NAME = "speak"
 
         /** The tool is only offered when a usable server and voice configuration exists. */
-        internal fun isConfigured(ctx: GenerationContext): Boolean =
-            ctx.ttsEnabled && ctx.ttsBaseUrl.isNotBlank() &&
-                (ctx.ttsVoiceName.isNotBlank() || ctx.ttsRefAudioUrl.isNotBlank())
+        internal fun isConfigured(ctx: GenerationContext): Boolean {
+            if (!ctx.ttsEnabled || ctx.ttsBaseUrl.isBlank()) return false
+            return when (TtsProviders.kindFor(ctx.ttsBaseUrl)) {
+                // DashScope Qwen-TTS has no reference-audio input, so a named voice is required.
+                TtsProviderKind.DASHSCOPE_QWEN_TTS -> ctx.ttsVoiceName.isNotBlank()
+                TtsProviderKind.OPENAI_SPEECH ->
+                    ctx.ttsVoiceName.isNotBlank() || ctx.ttsRefAudioUrl.isNotBlank()
+            }
+        }
+
+        /** Model the transport falls back to when the setting is blank. */
+        internal fun defaultModel(baseUrl: String): String =
+            when (TtsProviders.kindFor(baseUrl)) {
+                TtsProviderKind.DASHSCOPE_QWEN_TTS -> TtsProviders.DASHSCOPE_DEFAULT_MODEL
+                TtsProviderKind.OPENAI_SPEECH -> DEFAULT_TTS_MODEL_NAME
+            }
 
         internal fun definition(): ToolDefinition = ToolDefinition(function = ToolFunction(
             name = TOOL_NAME,
@@ -101,7 +116,7 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
                 config = TtsServerConfig(baseUrl = ctx.ttsBaseUrl, apiKey = ctx.ttsApiKey),
                 request = TtsRequest(
                     text = text,
-                    model = ctx.ttsModelName.ifBlank { DEFAULT_TTS_MODEL_NAME },
+                    model = ctx.ttsModelName.ifBlank { defaultModel(ctx.ttsBaseUrl) },
                     voiceName = ctx.ttsVoiceName.takeIf { it.isNotBlank() },
                     refAudioUrl = ctx.ttsRefAudioUrl.takeIf { it.isNotBlank() },
                     language = ctx.ttsLanguage,

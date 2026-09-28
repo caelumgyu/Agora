@@ -63,6 +63,7 @@
     <string name="tts_enable">تفعيل تحويل النص إلى كلام</string>
     <string name="tts_replay_audio">إعادة تشغيل الصوت</string>
     <string name="tts_stop_audio">إيقاف الصوت</string>
+    <string name="tts_dashscope_hint">أدخل صوتًا نظاميًا (مثل Cherry)؛ لا يتم اكتشاف النماذج والأصوات هنا.</string>
     <string name="tts_enable_desc">الاتصال بخادم متوافق مع IndexTTS (مثل IndexTTS 2.5 عبر vLLM-Omni) وقراءة النص بصوت عالٍ</string>
     <string name="tts_server">الخادم</string>
     <string name="tts_base_url">عنوان الخادم</string>

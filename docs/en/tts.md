@@ -28,6 +28,21 @@ Once enabled, Agora offers a `speak` tool to models that support tool calling. T
 - A failed synthesis leaves no replay button; the error shows on the tool card as usual.
 - Speech uses the default voice, language and speed from the settings above.
 
+## Cloud endpoints
+
+The protocol is chosen automatically from the server URL:
+
+- **Qwen-TTS on Alibaba Cloud DashScope** (`dashscope.aliyuncs.com` or `dashscope-intl.aliyuncs.com`)
+  uses DashScope's native speech API. Enter the model (default `qwen3-tts-flash`) and a system voice
+  such as `Cherry`. This API has no reference-audio cloning and no speed control, and it does not
+  expose model/voice listings — the settings page shows the detected endpoint instead. The language
+  setting maps to `language_type` (Chinese, English, Japanese, Spanish; mixed or unmapped codes use
+  `Auto`).
+- **Every other address** speaks the OpenAI-compatible `/v1/audio/speech` protocol: self-hosted
+  IndexTTS/vLLM-Omni servers, aggregation gateways (one-api, new-api, LiteLLM), and cloud providers
+  that offer this endpoint. Note that Agora always sends the IndexTTS `extra_params` extension, so a
+  server that rejects unknown request fields may need a small gateway in front.
+
 ## Serving IndexTTS 2.5 with vLLM-Omni
 
 ```bash

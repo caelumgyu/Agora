@@ -28,6 +28,18 @@
 - 合成失败时该轮没有重放按钮，错误会照常显示在工具卡片上。
 - 朗读使用设置中的默认音色、语言和语速。
 
+## 云端服务
+
+传输协议由服务器地址自动选择：
+
+- **阿里云百炼 DashScope（千问 TTS）**：地址为 `dashscope.aliyuncs.com` 或 `dashscope-intl.aliyuncs.com`
+  时使用 DashScope 原生语音接口。填写模型（默认 `qwen3-tts-flash`）和系统音色（如 `Cherry`）。该接口
+  不支持参考音频克隆与语速调节，也不提供模型/音色列表——设置页会显示检测到的接口提示。语言设置会
+  映射为 `language_type`（中文、英文、日文、西班牙文；中英混合或无法映射的语种使用 `Auto`）。
+- **其他地址**一律按 OpenAI 兼容的 `/v1/audio/speech` 协议处理：自托管 IndexTTS/vLLM-Omni、聚合网关
+  （one-api、new-api、LiteLLM），以及提供该接口的云服务。注意 Agora 始终会发送 IndexTTS 的
+  `extra_params` 扩展参数，严格校验未知字段的服务可能需要在前面加一层网关。
+
 ## 用 vLLM-Omni 部署 IndexTTS 2.5
 
 ```bash

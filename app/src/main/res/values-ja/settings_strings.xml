@@ -63,6 +63,7 @@
     <string name="tts_enable">テキスト読み上げを有効化</string>
     <string name="tts_replay_audio">音声を再生</string>
     <string name="tts_stop_audio">再生を停止</string>
+    <string name="tts_dashscope_hint">システム音声を入力してください（例: Cherry）。モデルと音声は自動検出されません。</string>
     <string name="tts_enable_desc">IndexTTS 互換サーバーに接続（例：vLLM-Omni で提供する IndexTTS 2.5）してテキストを読み上げる</string>
     <string name="tts_server">サーバー</string>
     <string name="tts_base_url">サーバー URL</string>

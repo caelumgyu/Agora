@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.newoether.agora.R
 import com.newoether.agora.api.tts.TtsClient
 import com.newoether.agora.api.tts.TtsError
+import com.newoether.agora.api.tts.TtsProviderKind
+import com.newoether.agora.api.tts.TtsProviders
 import com.newoether.agora.api.tts.TtsVoice
 import com.newoether.agora.api.tts.TtsRequest
 import com.newoether.agora.api.tts.TtsServerConfig
@@ -234,6 +236,10 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
     val scope = rememberCoroutineScope()
     val showDocFab by settings.showDocumentationFab.collectAsState()
 
+    // DashScope's native Qwen-TTS protocol is selected by its hosts; everything else is an
+    // OpenAI-compatible /v1/audio/speech server.
+    val dashScopeTts = TtsProviders.kindFor(baseUrl) == TtsProviderKind.DASHSCOPE_QWEN_TTS
+
     // Resolve the test-synthesis copy in composable scope so the plain function below
     // never invokes @Composable functions.
     val noUrlMessage = stringResource(R.string.tts_no_url)
@@ -282,9 +288,10 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
         }
     }
 
-    // Detect on enable and whenever the URL field commits a new value.
+    // Detect on enable and whenever the URL field commits a new value. DashScope's native API has
+    // no model/voice listing, so its hint replaces the detection row.
     LaunchedEffect(enabled, baseUrl) {
-        if (enabled && baseUrl.trim().isNotEmpty()) runDetection()
+        if (enabled && baseUrl.trim().isNotEmpty() && !dashScopeTts) runDetection()
     }
 
     fun runTestSynthesis() {
@@ -294,7 +301,7 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
             testState = TtsTestState.Failed(noUrlMessage)
             return
         }
-        if (voiceName.isBlank() && refAudioUrl.isBlank()) {
+        if (voiceName.isBlank() && (dashScopeTts || refAudioUrl.isBlank())) {
             testState = TtsTestState.Failed(needsVoiceMessage)
             return
         }
@@ -306,7 +313,9 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
                     config = TtsServerConfig(baseUrl = url, apiKey = settings.ttsApiKey.value),
                     request = TtsRequest(
                         text = sampleText,
-                        model = modelName.ifBlank { DEFAULT_TTS_MODEL_NAME },
+                        model = modelName.ifBlank {
+                            if (dashScopeTts) TtsProviders.DASHSCOPE_DEFAULT_MODEL else DEFAULT_TTS_MODEL_NAME
+                        },
                         voiceName = voiceName.takeIf { it.isNotBlank() },
                         refAudioUrl = refAudioUrl.takeIf { it.isNotBlank() },
                         language = language,
@@ -396,50 +405,80 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
                             }
                         },
                         {
-                            SettingsItem(
-                                headlineContent = { Text(stringResource(R.string.tts_detect)) },
-                                supportingContent = { Text(detectStatus ?: "") },
-                                leadingContent = { Icon(Icons.Default.Refresh, null, tint = MaterialTheme.colorScheme.primary) },
-                                modifier = Modifier.clickable { runDetection() }
-                            )
+                            if (dashScopeTts) {
+                                SettingsItem(
+                                    headlineContent = { Text("DashScope Qwen-TTS") },
+                                    supportingContent = { Text(stringResource(R.string.tts_dashscope_hint)) },
+                                    leadingContent = { Icon(Icons.Default.Cloud, null, tint = MaterialTheme.colorScheme.primary) },
+                                )
+                            } else {
+                                SettingsItem(
+                                    headlineContent = { Text(stringResource(R.string.tts_detect)) },
+                                    supportingContent = { Text(detectStatus ?: "") },
+                                    leadingContent = { Icon(Icons.Default.Refresh, null, tint = MaterialTheme.colorScheme.primary) },
+                                    modifier = Modifier.clickable { runDetection() }
+                                )
+                            }
                         },
                         {
-                            TtsSelectField(
-                                title = stringResource(R.string.tts_model_name),
-                                initial = modelName,
-                                options = detectedModels.let { list ->
-                                    if (modelName.isNotBlank() && modelName !in list) listOf(modelName) + list else list
-                                },
-                                placeholder = stringResource(R.string.tts_model_name_hint),
-                                icon = Icons.Default.Chat,
-                                onCommit = { settings.setTtsModelName(it) },
-                            )
+                            if (dashScopeTts) {
+                                TtsSettingField(
+                                    title = stringResource(R.string.tts_model_name),
+                                    initial = modelName,
+                                    placeholder = TtsProviders.DASHSCOPE_DEFAULT_MODEL,
+                                    icon = Icons.Default.Chat,
+                                    onCommit = { settings.setTtsModelName(it) },
+                                )
+                            } else {
+                                TtsSelectField(
+                                    title = stringResource(R.string.tts_model_name),
+                                    initial = modelName,
+                                    options = detectedModels.let { list ->
+                                        if (modelName.isNotBlank() && modelName !in list) listOf(modelName) + list else list
+                                    },
+                                    placeholder = stringResource(R.string.tts_model_name_hint),
+                                    icon = Icons.Default.Chat,
+                                    onCommit = { settings.setTtsModelName(it) },
+                                )
+                            }
                         },
                     ))
 
                     SettingsGroup(title = stringResource(R.string.tts_voice), items = listOf(
                         {
-                            TtsSelectField(
-                                title = stringResource(R.string.tts_voice_name),
-                                initial = voiceName,
-                                options = detectedVoices.map { it.name }.let { list ->
-                                    if (voiceName.isNotBlank() && voiceName !in list) listOf(voiceName) + list else list
-                                },
-                                placeholder = "demo_voice",
-                                description = stringResource(R.string.tts_voice_name_desc),
-                                icon = Icons.Default.Mic,
-                                onCommit = { settings.setTtsVoiceName(it) },
-                            )
+                            if (dashScopeTts) {
+                                TtsSettingField(
+                                    title = stringResource(R.string.tts_voice_name),
+                                    initial = voiceName,
+                                    placeholder = TtsProviders.DASHSCOPE_VOICE_EXAMPLE,
+                                    icon = Icons.Default.Mic,
+                                    onCommit = { settings.setTtsVoiceName(it) },
+                                )
+                            } else {
+                                TtsSelectField(
+                                    title = stringResource(R.string.tts_voice_name),
+                                    initial = voiceName,
+                                    options = detectedVoices.map { it.name }.let { list ->
+                                        if (voiceName.isNotBlank() && voiceName !in list) listOf(voiceName) + list else list
+                                    },
+                                    placeholder = "demo_voice",
+                                    description = stringResource(R.string.tts_voice_name_desc),
+                                    icon = Icons.Default.Mic,
+                                    onCommit = { settings.setTtsVoiceName(it) },
+                                )
+                            }
                         },
                         {
-                            TtsSettingField(
-                                title = stringResource(R.string.tts_ref_audio),
-                                initial = refAudioUrl,
-                                placeholder = "http://192.168.1.50/voice_01.wav",
-                                description = stringResource(R.string.tts_ref_audio_desc),
-                                icon = Icons.Default.Link,
-                                onCommit = { settings.setTtsRefAudioUrl(it) },
-                            )
+                            if (!dashScopeTts) {
+                                TtsSettingField(
+                                    title = stringResource(R.string.tts_ref_audio),
+                                    initial = refAudioUrl,
+                                    placeholder = "http://192.168.1.50/voice_01.wav",
+                                    description = stringResource(R.string.tts_ref_audio_desc),
+                                    icon = Icons.Default.Link,
+                                    onCommit = { settings.setTtsRefAudioUrl(it) },
+                                )
+                            }
                         },
                     ))
 
@@ -453,42 +492,45 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
                             )
                         },
                         {
-                            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)) {
-                                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-                                    Icon(Icons.Default.Speed, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 2.dp))
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Text(
-                                                stringResource(R.string.tts_speed),
-                                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                modifier = Modifier.weight(1f),
-                                            )
-                                            Text(
-                                                String.format(Locale.US, "%.1f×", speedGate.displayed),
-                                                style = MaterialTheme.typography.labelLarge,
-                                                color = MaterialTheme.colorScheme.primary,
-                                                fontWeight = FontWeight.Bold,
-                                                modifier = Modifier.padding(end = 8.dp),
+                            // DashScope Qwen-TTS has no speed control.
+                            if (!dashScopeTts) {
+                                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)) {
+                                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                                        Icon(Icons.Default.Speed, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 2.dp))
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Text(
+                                                    stringResource(R.string.tts_speed),
+                                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                    modifier = Modifier.weight(1f),
+                                                )
+                                                Text(
+                                                    String.format(Locale.US, "%.1f×", speedGate.displayed),
+                                                    style = MaterialTheme.typography.labelLarge,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    fontWeight = FontWeight.Bold,
+                                                    modifier = Modifier.padding(end = 8.dp),
+                                                )
+                                            }
+                                            Slider(
+                                                value = speedGate.displayed,
+                                                onValueChange = speedGate::updateFromGesture,
+                                                onValueChangeFinished = {
+                                                    val committed = (speedGate.displayed * 10).roundToInt() / 10f
+                                                    if (committed == speed) {
+                                                        speedGate.settleWithoutWrite(speed, committed)
+                                                    } else {
+                                                        speedGate.expectPersisted(committed, committed)
+                                                        settings.setTtsSpeed(committed)
+                                                    }
+                                                },
+                                                valueRange = 0.5f..2.0f,
+                                                steps = 14,
+                                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                                             )
                                         }
-                                        Slider(
-                                            value = speedGate.displayed,
-                                            onValueChange = speedGate::updateFromGesture,
-                                            onValueChangeFinished = {
-                                                val committed = (speedGate.displayed * 10).roundToInt() / 10f
-                                                if (committed == speed) {
-                                                    speedGate.settleWithoutWrite(speed, committed)
-                                                } else {
-                                                    speedGate.expectPersisted(committed, committed)
-                                                    settings.setTtsSpeed(committed)
-                                                }
-                                            },
-                                            valueRange = 0.5f..2.0f,
-                                            steps = 14,
-                                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                                        )
                                     }
                                 }
                             }

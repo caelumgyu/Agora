@@ -63,6 +63,7 @@
     <string name="tts_enable">Activer la synthèse vocale</string>
     <string name="tts_replay_audio">Réécouter l\'audio</string>
     <string name="tts_stop_audio">Arrêter l\'audio</string>
+    <string name="tts_dashscope_hint">Saisissez une voix système (par ex. Cherry) ; les modèles et voix ne sont pas détectés ici.</string>
     <string name="tts_enable_desc">Connecter un serveur compatible IndexTTS (p. ex. IndexTTS 2.5 servi par vLLM-Omni) et lire le texte à voix haute</string>
     <string name="tts_server">Serveur</string>
     <string name="tts_base_url">URL du serveur</string>

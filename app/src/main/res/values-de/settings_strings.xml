@@ -63,6 +63,7 @@
     <string name="tts_enable">Text zu Sprache aktivieren</string>
     <string name="tts_replay_audio">Audio erneut abspielen</string>
     <string name="tts_stop_audio">Wiedergabe stoppen</string>
+    <string name="tts_dashscope_hint">Systemstimme eingeben (z. B. Cherry); Modelle und Stimmen werden hier nicht erkannt.</string>
     <string name="tts_enable_desc">IndexTTS-kompatiblen Server verbinden, z. B. IndexTTS 2.5 über vLLM-Omni, und Texte vorlesen</string>
     <string name="tts_server">Server</string>
     <string name="tts_base_url">Server-URL</string>
