@@ -73,6 +73,7 @@
     <string name="tts_voice_upload_status">正在上传…</string>
     <string name="tts_voice_upload_ok">音色「%1$s」上传成功</string>
     <string name="tts_voice_upload_failed">上传失败：%1$s</string>
+    <string name="tts_voice_upload_clone_note">复刻音色绑定到 Qwen3-TTS-VC 模型，模型设置会自动切换。百炼按创建的每个音色计费。</string>
     <string name="tts_enable_desc">连接兼容 IndexTTS 的服务器（例如 vLLM-Omni 部署的 IndexTTS 2.5），朗读任意文本</string>
     <string name="tts_server">服务器</string>
     <string name="tts_base_url">服务器地址</string>

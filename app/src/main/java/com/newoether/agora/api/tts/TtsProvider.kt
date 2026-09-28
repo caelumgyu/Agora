@@ -26,6 +26,12 @@ object TtsProviders {
     /** Upload bound shared by the settings UI and the server-side voice registration API. */
     const val MAX_VOICE_SAMPLE_BYTES = 10L * 1024L * 1024L
 
+    /**
+     * Qwen3-TTS voice-cloning model. DashScope binds every cloned voice to the model named at
+     * creation time, so the app switches its selected model to this one after an upload.
+     */
+    const val DASHSCOPE_CLONE_MODEL = "qwen3-tts-vc-2026-01-22"
+
     private val DASHSCOPE_HOSTS = listOf("dashscope.aliyuncs.com", "dashscope-intl.aliyuncs.com")
 
     /** Picks the transport for [baseUrl]; unknown or blank URLs stay OpenAI-compatible. */

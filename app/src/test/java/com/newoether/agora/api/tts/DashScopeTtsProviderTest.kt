@@ -1,6 +1,5 @@
 package com.newoether.agora.api.tts
 
-import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -26,6 +25,18 @@ class DashScopeTtsProviderTest {
             "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation",
             DashScopeTtsProvider.speechEndpoint("https://dashscope-intl.aliyuncs.com"),
         )
+    }
+
+    @Test
+    fun `enrollment endpoint follows the same base normalization`() {
+        val expected = "https://dashscope.aliyuncs.com/api/v1/services/audio/tts/customization"
+
+        assertEquals(expected, DashScopeTtsProvider.enrollmentEndpoint("https://dashscope.aliyuncs.com"))
+        assertEquals(
+            expected,
+            DashScopeTtsProvider.enrollmentEndpoint("https://dashscope.aliyuncs.com/api/v1"),
+        )
+        assertEquals(expected, DashScopeTtsProvider.enrollmentEndpoint(expected))
     }
 
     @Test
@@ -72,6 +83,52 @@ class DashScopeTtsProviderTest {
     }
 
     @Test
+    fun `clone request embeds the clip as a data uri bound to the clone model`() {
+        val sample = File.createTempFile("voice", ".mp3").apply { writeBytes(byteArrayOf(1, 2, 3)) }
+        try {
+            val body = DashScopeTtsProvider.cloneRequestBody(sample, "My Voice 甘城")
+            val root = Json.parseToJsonElement(body).jsonObject
+
+            assertEquals("qwen-voice-enrollment", root["model"]?.jsonPrimitive?.content)
+            val input = root["input"]!!.jsonObject
+            assertEquals("create", input["action"]?.jsonPrimitive?.content)
+            assertEquals("qwen3-tts-vc-2026-01-22", input["target_model"]?.jsonPrimitive?.content)
+            assertEquals("my-voice", input["preferred_name"]?.jsonPrimitive?.content)
+            val data = input["audio"]!!.jsonObject["data"]?.jsonPrimitive?.content.orEmpty()
+            assertTrue(data.startsWith("data:audio/mpeg;base64,"))
+            assertEquals(
+                listOf<Byte>(1, 2, 3),
+                java.util.Base64.getDecoder().decode(data.substringAfter(",")).toList(),
+            )
+        } finally {
+            sample.delete()
+        }
+    }
+
+    @Test
+    fun `clone preferred names fall back to a stable default`() {
+        assertEquals("guanyu", DashScopeTtsProvider.clonePreferredName(" guanyu "))
+        // Non-ASCII names are labels only; the created voice id remains valid.
+        assertEquals("voice", DashScopeTtsProvider.clonePreferredName("甘城"))
+        assertEquals("voice", DashScopeTtsProvider.clonePreferredName("!!!"))
+    }
+
+    @Test
+    fun `enrollment response yields the created voice id`() {
+        val voice = DashScopeTtsProvider.parseEnrolledVoice(
+            """{"output":{"voice":"qwen3-tts-vc-2026-01-22-myvoice-abc123"},"usage":{}}""",
+        )
+
+        assertEquals("qwen3-tts-vc-2026-01-22-myvoice-abc123", voice.name)
+        try {
+            DashScopeTtsProvider.parseEnrolledVoice("""{"code":"InvalidParameter","message":"audio too short"}""")
+            fail("Expected a malformed enrollment response to be rejected")
+        } catch (error: TtsError) {
+            assertTrue(error.message.orEmpty().contains("too short"))
+        }
+    }
+
+    @Test
     fun `non-stream responses expose base64 audio url or an error envelope`() {
         val base64 = java.util.Base64.getEncoder().encodeToString(byteArrayOf(1, 2, 3))
 
@@ -92,19 +149,5 @@ class DashScopeTtsProviderTest {
             DashScopeTtsProvider.providerError("""{"code":"InvalidApiKey","message":"Invalid API-key provided"}"""),
         )
         assertNull(DashScopeTtsProvider.providerError("""{"output":{"audio":{"url":"https://x/a.wav"}}}"""))
-    }
-
-    @Test
-    fun `voice upload is rejected for dashscope`() = runTest {
-        try {
-            DashScopeTtsProvider().uploadVoice(
-                TtsServerConfig(baseUrl = "https://dashscope.aliyuncs.com"),
-                File("voice.wav"),
-                "Cherry",
-            )
-            fail("Expected DashScope voice upload to be rejected")
-        } catch (error: TtsError) {
-            assertTrue(error.message.orEmpty().contains("does not support"))
-        }
     }
 }

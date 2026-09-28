@@ -72,6 +72,7 @@
     <string name="tts_voice_upload_status">アップロード中…</string>
     <string name="tts_voice_upload_ok">音声「%1$s」をアップロードしました</string>
     <string name="tts_voice_upload_failed">アップロードに失敗しました: %1$s</string>
+    <string name="tts_voice_upload_clone_note">複製した音声は Qwen3-TTS-VC モデルに紐づき、モデル設定は自動的に切り替わります。音声の作成ごとに DashScope の料金がかかります。</string>
     <string name="tts_enable_desc">IndexTTS 互換サーバーに接続（例：vLLM-Omni で提供する IndexTTS 2.5）してテキストを読み上げる</string>
     <string name="tts_server">サーバー</string>
     <string name="tts_base_url">サーバー URL</string>

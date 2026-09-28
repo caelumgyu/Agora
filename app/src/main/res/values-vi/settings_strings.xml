@@ -72,6 +72,7 @@
     <string name="tts_voice_upload_status">Đang tải lên…</string>
     <string name="tts_voice_upload_ok">Đã tải lên giọng "%1$s"</string>
     <string name="tts_voice_upload_failed">Tải lên thất bại: %1$s</string>
+    <string name="tts_voice_upload_clone_note">Giọng sao chép được gắn với model Qwen3-TTS-VC; cài đặt model sẽ tự chuyển. DashScope tính phí cho mỗi giọng tạo.</string>
     <string name="tts_enable_desc">Kết nối máy chủ tương thích IndexTTS (ví dụ IndexTTS 2.5 qua vLLM-Omni) và đọc to văn bản</string>
     <string name="tts_server">Máy chủ</string>
     <string name="tts_base_url">URL máy chủ</string>

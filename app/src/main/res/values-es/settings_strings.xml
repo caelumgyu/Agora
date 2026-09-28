@@ -72,6 +72,7 @@
     <string name="tts_voice_upload_status">Subiendo…</string>
     <string name="tts_voice_upload_ok">Voz «%1$s» subida</string>
     <string name="tts_voice_upload_failed">Error al subir: %1$s</string>
+    <string name="tts_voice_upload_clone_note">Las voces clonadas se vinculan al modelo Qwen3-TTS-VC; el ajuste de modelo cambia automáticamente. DashScope cobra por cada voz creada.</string>
     <string name="tts_enable_desc">Conectar un servidor compatible con IndexTTS (p. ej. IndexTTS 2.5 servido por vLLM-Omni) y leer texto en voz alta</string>
     <string name="tts_server">Servidor</string>
     <string name="tts_base_url">URL del servidor</string>

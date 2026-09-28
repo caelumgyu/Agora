@@ -40,6 +40,11 @@ The protocol is chosen automatically from the server URL:
   expose model/voice listings — the settings page shows the detected endpoint instead. The language
   setting maps to `language_type` (Chinese, English, Japanese, Spanish; mixed or unmapped codes use
   `Auto`).
+- **Uploading a local clip on DashScope** creates a cloned voice through `qwen-voice-enrollment` and
+  switches the model to `qwen3-tts-vc-2026-01-22`, which the voice is bound to. The sample travels
+  inline as a base64 Data URI, so no public host is needed. Qwen-TTS cloning expects mono audio at
+  24 kHz or higher, ideally 10–20 seconds (60 s and 10 MB max), and DashScope bills every voice you
+  create.
 - **Every other address** speaks the OpenAI-compatible `/v1/audio/speech` protocol: self-hosted
   IndexTTS/vLLM-Omni servers, aggregation gateways (one-api, new-api, LiteLLM), and cloud providers
   that offer this endpoint. Note that Agora always sends the IndexTTS `extra_params` extension, so a

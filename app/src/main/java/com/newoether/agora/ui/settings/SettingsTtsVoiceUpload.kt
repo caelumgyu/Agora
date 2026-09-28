@@ -53,6 +53,7 @@ import kotlinx.coroutines.withContext
 internal fun TtsVoiceUploadItem(
     baseUrl: String,
     apiKey: String,
+    note: String? = null,
     onUploaded: (String) -> Unit,
 ) {
     val context = LocalContext.current
@@ -108,6 +109,14 @@ internal fun TtsVoiceUploadItem(
                             it,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    note?.let {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            it,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                         )
                     }
                 }

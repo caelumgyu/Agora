@@ -469,16 +469,22 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
                             }
                         },
                         {
-                            if (!dashScopeTts) {
-                                TtsVoiceUploadItem(
-                                    baseUrl = baseUrl,
-                                    apiKey = apiKey,
-                                    onUploaded = { name ->
-                                        settings.setTtsVoiceName(name)
-                                        runDetection()
-                                    },
-                                )
-                            }
+                            TtsVoiceUploadItem(
+                                baseUrl = baseUrl,
+                                apiKey = apiKey,
+                                note = if (dashScopeTts) {
+                                    stringResource(R.string.tts_voice_upload_clone_note)
+                                } else {
+                                    null
+                                },
+                                onUploaded = { name ->
+                                    settings.setTtsVoiceName(name)
+                                    if (dashScopeTts) {
+                                        settings.setTtsModelName(TtsProviders.DASHSCOPE_CLONE_MODEL)
+                                    }
+                                    runDetection()
+                                },
+                            )
                         },
                         {
                             if (!dashScopeTts) {
