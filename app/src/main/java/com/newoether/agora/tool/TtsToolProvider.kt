@@ -58,10 +58,7 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
                 TtsProviderKind.OPENAI_SPEECH -> DEFAULT_TTS_MODEL_NAME
             }
 
-        internal fun definition(
-            emotionSupported: Boolean,
-            speedSupported: Boolean,
-        ): ToolDefinition {
+        internal fun definition(emotionSupported: Boolean): ToolDefinition {
             val description = buildString {
                 append(
                     "Read a message aloud to the user through text-to-speech. The audio plays immediately; " +
@@ -74,19 +71,9 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
                 if (emotionSupported) {
                     append(
                         " When the tone matters, set `emotion` to a short description (for example 开心, " +
-                            "疲惫, 兴奋地) or \"auto\" to let the server infer it from the text.",
-                    )
-                }
-                if (speedSupported) {
-                    append(
-                        " Set `speed` (0.5–2.0) when the delivery should be faster or slower than the " +
-                            "configured default.",
-                    )
-                }
-                if (emotionSupported || speedSupported) {
-                    append(
-                        " A reply may mix sentences with different tone or pacing: call this tool once " +
-                            "per sentence instead of merging them into one line.",
+                            "疲惫, 兴奋地) or \"auto\" to let the server infer it from the text. A reply may " +
+                            "mix sentences with different tone: call this tool once per sentence instead of " +
+                            "merging them into one line.",
                     )
                 }
             }
@@ -98,15 +85,6 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
                         ToolProperty(
                             "string",
                             "Optional tone, e.g. 开心 or 难过、语速缓慢; \"auto\" infers it from the text.",
-                        ),
-                    )
-                }
-                if (speedSupported) {
-                    put(
-                        "speed",
-                        ToolProperty(
-                            "number",
-                            "Optional speech rate for this line, 0.5–2.0 (1.0 is normal).",
                         ),
                     )
                 }
@@ -127,13 +105,6 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
         /** Optional tone description; null when the argument is missing or blank. */
         internal fun parseEmotion(arguments: String): String? = parseArgument(arguments, "emotion")
 
-        /** Optional per-line rate, clamped to the supported 0.5–2.0 range; null when absent. */
-        internal fun parseSpeed(arguments: String): Float? {
-            val value = parseArgument(arguments, "speed")?.toFloatOrNull() ?: return null
-            if (!value.isFinite()) return null
-            return value.coerceIn(com.newoether.agora.data.TTS_MIN_SPEED, com.newoether.agora.data.TTS_MAX_SPEED)
-        }
-
         private fun parseArgument(arguments: String, key: String): String? =
             runCatching { Json.parseToJsonElement(arguments.ifBlank { "{}" }).jsonObject }
                 .getOrNull()
@@ -148,15 +119,10 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
 
     override fun definitions(ctx: GenerationContext): List<ToolDefinition> =
         if (isConfigured(ctx)) {
-            // DashScope's Qwen-TTS has no text-based tone control and no speed field; only offer
-            // those arguments where the OpenAI-compatible path can forward them (IndexTTS).
+            // DashScope's Qwen-TTS has no text-based tone control; only offer the argument where
+            // the OpenAI-compatible path can forward it (IndexTTS).
             val extendedControls = TtsProviders.kindFor(ctx.ttsBaseUrl) == TtsProviderKind.OPENAI_SPEECH
-            listOf(
-                definition(
-                    emotionSupported = extendedControls,
-                    speedSupported = extendedControls,
-                ),
-            )
+            listOf(definition(emotionSupported = extendedControls))
         } else {
             emptyList()
         }
@@ -196,7 +162,7 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
                     voiceName = ctx.ttsVoiceName.takeIf { it.isNotBlank() },
                     refAudioUrl = ctx.ttsRefAudioUrl.takeIf { it.isNotBlank() },
                     language = ctx.ttsLanguage,
-                    speed = parseSpeed(arguments) ?: ctx.ttsSpeed,
+                    speed = ctx.ttsSpeed,
                     emotion = parseEmotion(arguments),
                 ),
             )
