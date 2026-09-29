@@ -33,6 +33,18 @@ internal class SettingsTtsPreferenceStore(
         pref[TTS_SPEAK_PROMPT]?.takeIf { it.isNotBlank() } ?: DEFAULT_TTS_SPEAK_PROMPT
     }
 
+    /** Infer the emotion from the spoken text (`use_emo_text`). */
+    val emotionAuto: Flow<Boolean> = dataStore.data.map { it[TTS_EMOTION_AUTO] ?: DEFAULT_TTS_EMOTION_AUTO }
+
+    /** Emotion vector strength (`emo_alpha`). */
+    val emotionAlpha: Flow<Float> = dataStore.data.map { pref ->
+        normalizeTtsEmotionAlpha(pref[TTS_EMOTION_ALPHA]?.toFloatOrNull() ?: DEFAULT_TTS_EMOTION_ALPHA)
+    }
+
+    /** Draw a random emotion per synthesis (`use_random`). */
+    val emotionRandom: Flow<Boolean> =
+        dataStore.data.map { it[TTS_EMOTION_RANDOM] ?: DEFAULT_TTS_EMOTION_RANDOM }
+
     suspend fun saveEnabled(enabled: Boolean) { dataStore.edit { it[TTS_ENABLED] = enabled } }
     suspend fun saveBaseUrl(url: String) { dataStore.edit { it[TTS_BASE_URL] = url.trim() } }
     suspend fun saveApiKey(key: String) {
@@ -57,4 +69,12 @@ internal class SettingsTtsPreferenceStore(
             if (trimmed.isBlank()) prefs.remove(TTS_SPEAK_PROMPT) else prefs[TTS_SPEAK_PROMPT] = trimmed
         }
     }
+
+    suspend fun saveEmotionAuto(enabled: Boolean) { dataStore.edit { it[TTS_EMOTION_AUTO] = enabled } }
+
+    suspend fun saveEmotionAlpha(alpha: Float) {
+        dataStore.edit { it[TTS_EMOTION_ALPHA] = normalizeTtsEmotionAlpha(alpha).toString() }
+    }
+
+    suspend fun saveEmotionRandom(enabled: Boolean) { dataStore.edit { it[TTS_EMOTION_RANDOM] = enabled } }
 }

@@ -63,6 +63,24 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
         internal fun promptFor(ctx: GenerationContext): String =
             ctx.ttsSpeakPrompt.ifBlank { DEFAULT_TTS_SPEAK_PROMPT }
 
+        /**
+         * One synthesis request: the tool call's own tone (when the model set one) plus the
+         * configured emotion defaults. Without an explicit tone, the automatic mode asks the
+         * server to infer the emotion from the spoken text.
+         */
+        internal fun buildRequest(ctx: GenerationContext, text: String, arguments: String): TtsRequest =
+            TtsRequest(
+                text = text,
+                model = ctx.ttsModelName.ifBlank { defaultModel(ctx.ttsBaseUrl) },
+                voiceName = ctx.ttsVoiceName.takeIf { it.isNotBlank() },
+                refAudioUrl = ctx.ttsRefAudioUrl.takeIf { it.isNotBlank() },
+                language = ctx.ttsLanguage,
+                speed = ctx.ttsSpeed,
+                emotion = parseEmotion(arguments) ?: if (ctx.ttsEmotionAuto) "auto" else null,
+                emotionAlpha = ctx.ttsEmotionAlpha,
+                useRandom = ctx.ttsEmotionRandom,
+            )
+
         internal fun definition(prompt: String, emotionSupported: Boolean): ToolDefinition {
             val description = buildString {
                 append(prompt)
@@ -160,15 +178,7 @@ class TtsToolProvider(private val app: Application) : ToolProvider {
             val cacheFile = client.synthesize(
                 context = app,
                 config = TtsServerConfig(baseUrl = ctx.ttsBaseUrl, apiKey = ctx.ttsApiKey),
-                request = TtsRequest(
-                    text = text,
-                    model = ctx.ttsModelName.ifBlank { defaultModel(ctx.ttsBaseUrl) },
-                    voiceName = ctx.ttsVoiceName.takeIf { it.isNotBlank() },
-                    refAudioUrl = ctx.ttsRefAudioUrl.takeIf { it.isNotBlank() },
-                    language = ctx.ttsLanguage,
-                    speed = ctx.ttsSpeed,
-                    emotion = parseEmotion(arguments),
-                ),
+                request = buildRequest(ctx, text, arguments),
             )
             val stored = try {
                 audioStore.persistFile(cacheFile)

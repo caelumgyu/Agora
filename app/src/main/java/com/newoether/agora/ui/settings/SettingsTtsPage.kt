@@ -7,6 +7,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Casino
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Key
@@ -17,6 +19,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,6 +39,18 @@ import com.newoether.agora.api.tts.TtsVoice
 import com.newoether.agora.api.tts.TtsRequest
 import com.newoether.agora.api.tts.TtsServerConfig
 import com.newoether.agora.data.DEFAULT_TTS_MODEL_NAME
+import com.newoether.agora.data.repository.setTtsApiKey
+import com.newoether.agora.data.repository.setTtsBaseUrl
+import com.newoether.agora.data.repository.setTtsEmotionAlpha
+import com.newoether.agora.data.repository.setTtsEmotionAuto
+import com.newoether.agora.data.repository.setTtsEmotionRandom
+import com.newoether.agora.data.repository.setTtsEnabled
+import com.newoether.agora.data.repository.setTtsLanguage
+import com.newoether.agora.data.repository.setTtsModelName
+import com.newoether.agora.data.repository.setTtsRefAudioUrl
+import com.newoether.agora.data.repository.setTtsSpeakPrompt
+import com.newoether.agora.data.repository.setTtsSpeed
+import com.newoether.agora.data.repository.setTtsVoiceName
 import com.newoether.agora.ui.common.PersistedSliderFeedbackGate
 import com.newoether.agora.ui.components.AgoraDropdownMenuItem
 import com.newoether.agora.ui.components.AgoraExposedDropdownMenu
@@ -218,6 +233,9 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
     val language by settings.ttsLanguage.collectAsState()
     val speed by settings.ttsSpeed.collectAsState()
     val speakPrompt by settings.ttsSpeakPrompt.collectAsState()
+    val emotionAuto by settings.ttsEmotionAuto.collectAsState()
+    val emotionAlpha by settings.ttsEmotionAlpha.collectAsState()
+    val emotionRandom by settings.ttsEmotionRandom.collectAsState()
 
     var apiKeyText by remember { mutableStateOf(apiKey) }
     LaunchedEffect(apiKey) { if (apiKeyText != apiKey) apiKeyText = apiKey }
@@ -233,6 +251,14 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
         )
     }
     LaunchedEffect(speed) { speedGate.reconcile(speed) }
+
+    val emotionAlphaGate = remember {
+        PersistedSliderFeedbackGate(
+            initialPersisted = emotionAlpha,
+            toDisplay = Float::toFloat,
+        )
+    }
+    LaunchedEffect(emotionAlpha) { emotionAlphaGate.reconcile(emotionAlpha) }
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -322,6 +348,9 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
                         refAudioUrl = refAudioUrl.takeIf { it.isNotBlank() },
                         language = language,
                         speed = speed,
+                        emotion = if (emotionAuto) "auto" else null,
+                        emotionAlpha = emotionAlpha,
+                        useRandom = emotionRandom,
                     ),
                 )
                 testState = TtsTestState.Ok(file)
@@ -556,6 +585,80 @@ fun SettingsTtsPage(viewModel: ChatViewModel, onBack: () -> Unit) {
                             }
                         },
                     ))
+
+                    if (!dashScopeTts) {
+                        SettingsGroup(title = stringResource(R.string.tts_emotion), items = listOf(
+                            {
+                                SettingsItem(
+                                    headlineContent = { Text(stringResource(R.string.tts_emotion_auto)) },
+                                    supportingContent = { Text(stringResource(R.string.tts_emotion_auto_desc)) },
+                                    leadingContent = { Icon(Icons.Default.AutoAwesome, null, tint = MaterialTheme.colorScheme.primary) },
+                                    trailingContent = {
+                                        Switch(checked = emotionAuto, onCheckedChange = { settings.setTtsEmotionAuto(it) })
+                                    },
+                                    modifier = Modifier.clickable { settings.setTtsEmotionAuto(!emotionAuto) },
+                                )
+                            },
+                            {
+                                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)) {
+                                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                                        Icon(Icons.Default.Tune, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(top = 2.dp))
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Text(
+                                                    stringResource(R.string.tts_emotion_alpha),
+                                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                    modifier = Modifier.weight(1f),
+                                                )
+                                                Text(
+                                                    String.format(Locale.US, "%d%%", (emotionAlphaGate.displayed * 100).roundToInt()),
+                                                    style = MaterialTheme.typography.labelLarge,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    fontWeight = FontWeight.Bold,
+                                                    modifier = Modifier.padding(end = 8.dp),
+                                                )
+                                            }
+                                            Slider(
+                                                value = emotionAlphaGate.displayed,
+                                                onValueChange = emotionAlphaGate::updateFromGesture,
+                                                onValueChangeFinished = {
+                                                    val committed = (emotionAlphaGate.displayed * 10).roundToInt() / 10f
+                                                    if (committed == emotionAlpha) {
+                                                        emotionAlphaGate.settleWithoutWrite(emotionAlpha, committed)
+                                                    } else {
+                                                        emotionAlphaGate.expectPersisted(committed, committed)
+                                                        settings.setTtsEmotionAlpha(committed)
+                                                    }
+                                                },
+                                                valueRange = 0.1f..1.0f,
+                                                steps = 8,
+                                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                            )
+                                            Text(
+                                                stringResource(R.string.tts_emotion_alpha_desc),
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                                modifier = Modifier.padding(top = 6.dp),
+                                            )
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                SettingsItem(
+                                    headlineContent = { Text(stringResource(R.string.tts_emotion_random)) },
+                                    supportingContent = { Text(stringResource(R.string.tts_emotion_random_desc)) },
+                                    leadingContent = { Icon(Icons.Default.Casino, null, tint = MaterialTheme.colorScheme.primary) },
+                                    trailingContent = {
+                                        Switch(checked = emotionRandom, onCheckedChange = { settings.setTtsEmotionRandom(it) })
+                                    },
+                                    modifier = Modifier.clickable { settings.setTtsEmotionRandom(!emotionRandom) },
+                                )
+                            },
+                        ))
+                    }
 
                     SettingsGroup(title = stringResource(R.string.tts_test), items = listOf({
                         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)) {

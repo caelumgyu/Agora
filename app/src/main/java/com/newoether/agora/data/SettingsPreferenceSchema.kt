@@ -85,6 +85,10 @@ internal val TTS_LANGUAGE = stringPreferencesKey("tts_language")
 internal val TTS_SPEED = stringPreferencesKey("tts_speed")
 /** User override for the `speak` tool description; blank falls back to the built-in prompt. */
 internal val TTS_SPEAK_PROMPT = stringPreferencesKey("tts_speak_prompt")
+/** IndexTTS emotion controls: infer the emotion from the text, its strength, and randomness. */
+internal val TTS_EMOTION_AUTO = booleanPreferencesKey("tts_emotion_auto")
+internal val TTS_EMOTION_ALPHA = stringPreferencesKey("tts_emotion_alpha")
+internal val TTS_EMOTION_RANDOM = booleanPreferencesKey("tts_emotion_random")
 internal val SEARCH_CONTEXT_WINDOW = intPreferencesKey("search_context_window")
 internal val SEARCH_MATCH_LIMIT = intPreferencesKey("search_match_limit")
 internal val RAG_THRESHOLD = stringPreferencesKey("rag_threshold")

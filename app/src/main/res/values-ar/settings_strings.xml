@@ -75,6 +75,13 @@
     <string name="tts_voice_upload_clone_note">الأصوات المستنسخة مرتبطة بنموذج Qwen3-TTS-VC؛ ويتغير إعداد النموذج تلقائيًا. تفرض DashScope رسومًا على كل صوت يتم إنشاؤه.</string>
     <string name="tts_speak_prompt">موجّه القراءة</string>
     <string name="tts_speak_prompt_desc">إرشادات لأداة القراءة لدى النموذج. تُضاف متطلبات النبرة (emotion بالصينية فقط) تلقائيًا.</string>
+    <string name="tts_emotion">التحكم في المشاعر</string>
+    <string name="tts_emotion_auto">استنتاج المشاعر من النص</string>
+    <string name="tts_emotion_auto_desc">يستنتج الخادم المشاعر من النص (use_emo_text)، وتبقى الإشارة لكل سطر لها الأولوية.</string>
+    <string name="tts_emotion_alpha">شدة المشاعر</string>
+    <string name="tts_emotion_alpha_desc">شدة متجه المشاعر (emo_alpha)؛ نحو 60% أو أقل يبدو أكثر طبيعية.</string>
+    <string name="tts_emotion_random">مشاعر عشوائية</string>
+    <string name="tts_emotion_random_desc">يختار مشاعر عشوائية لكل عملية توليد (use_random)، وهو مفيد للمقارنة.</string>
     <string name="tts_enable_desc">الاتصال بخادم متوافق مع IndexTTS (مثل IndexTTS 2.5 عبر vLLM-Omni) وقراءة النص بصوت عالٍ</string>
     <string name="tts_server">الخادم</string>
     <string name="tts_base_url">عنوان الخادم</string>

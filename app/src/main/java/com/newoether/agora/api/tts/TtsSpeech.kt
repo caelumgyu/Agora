@@ -44,6 +44,10 @@ data class TtsRequest(
      * spoken text itself. Other transports ignore it.
      */
     val emotion: String? = null,
+    /** 0.1–1.0 strength of the emotion vector (IndexTTS `emo_alpha`); 1.0 is full strength. */
+    val emotionAlpha: Float = 1.0f,
+    /** Draw a random emotion for this synthesis (IndexTTS `use_random`). */
+    val useRandom: Boolean = false,
 )
 
 /** A voice selectable by name: a built-in speaker or one uploaded to the server. */

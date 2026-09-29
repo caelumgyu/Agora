@@ -76,6 +76,13 @@
     <string name="tts_voice_upload_clone_note">复刻音色绑定到 Qwen3-TTS-VC 模型，模型设置会自动切换。百炼按创建的每个音色计费。</string>
     <string name="tts_speak_prompt">朗读提示词</string>
     <string name="tts_speak_prompt_desc">指导模型何时朗读、如何写朗读文本；语气要求（emo_text 必须为中文）会自动附加。</string>
+    <string name="tts_emotion">情感控制</string>
+    <string name="tts_emotion_auto">根据文本自动生成情感</string>
+    <string name="tts_emotion_auto_desc">朗读前由服务端从文本推断情感（use_emo_text）；模型仍可在单次调用里指定语气覆盖它。</string>
+    <string name="tts_emotion_alpha">情感强度</string>
+    <string name="tts_emotion_alpha_desc">情感向量的强度（emo_alpha）；建议 60% 左右或更低，效果更自然。</string>
+    <string name="tts_emotion_random">随机情感</string>
+    <string name="tts_emotion_random_desc">每次合成都随机选择一种情感（use_random），适合试听对比。</string>
     <string name="tts_enable_desc">连接兼容 IndexTTS 的服务器（例如 vLLM-Omni 部署的 IndexTTS 2.5），朗读任意文本</string>
     <string name="tts_server">服务器</string>
     <string name="tts_base_url">服务器地址</string>

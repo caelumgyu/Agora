@@ -75,6 +75,13 @@
     <string name="tts_voice_upload_clone_note">복제 음성은 Qwen3-TTS-VC 모델에 연결되며 모델 설정이 자동으로 전환됩니다. 생성한 음성마다 DashScope 요금이 부과됩니다.</string>
     <string name="tts_speak_prompt">읽기 프롬프트</string>
     <string name="tts_speak_prompt_desc">모델의 읽기 도구 지침. 어조 요구 사항(emotion은 중국어만)은 자동으로 추가됩니다.</string>
+    <string name="tts_emotion">감정 제어</string>
+    <string name="tts_emotion_auto">텍스트에서 감정 자동 추론</string>
+    <string name="tts_emotion_auto_desc">읽기 전에 서버가 텍스트에서 감정을 추론합니다(use_emo_text). 줄별 지정이 우선합니다.</string>
+    <string name="tts_emotion_alpha">감정 강도</string>
+    <string name="tts_emotion_alpha_desc">감정 벡터의 강도(emo_alpha). 60% 정도나 그 이하가 더 자연스럽습니다.</string>
+    <string name="tts_emotion_random">무작위 감정</string>
+    <string name="tts_emotion_random_desc">합성할 때마다 무작위 감정을 선택합니다(use_random). 청취 비교에 유용합니다.</string>
     <string name="tts_enable_desc">IndexTTS 호환 서버에 연결(예: vLLM-Omni의 IndexTTS 2.5)하고 텍스트를 소리 내어 읽기</string>
     <string name="tts_server">서버</string>
     <string name="tts_base_url">서버 URL</string>

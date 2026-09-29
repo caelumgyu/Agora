@@ -46,6 +46,37 @@ class OpenAiSpeechTtsProviderTest {
     }
 
     @Test
+    fun `emotion strength and randomness follow the request`() {
+        val body = OpenAiSpeechTtsProvider.buildBody(
+            TtsRequest(
+                "hi",
+                "m",
+                voiceName = "demo",
+                language = "zh",
+                emotion = "auto",
+                emotionAlpha = 0.6f,
+                useRandom = true,
+            ),
+        )
+        assertTrue(body.contains(""""use_random":true"""))
+        assertTrue(body.contains(""""use_emo_text":true"""))
+        assertTrue(body.contains(""""emo_alpha":0.6"""))
+
+        // Full strength is the server default; no alpha key is sent.
+        val full = OpenAiSpeechTtsProvider.buildBody(
+            TtsRequest("hi", "m", voiceName = "demo", language = "zh", emotion = "auto"),
+        )
+        assertFalse(full.contains("emo_alpha"))
+
+        // Randomness without a tone still forwards the flag.
+        val randomOnly = OpenAiSpeechTtsProvider.buildBody(
+            TtsRequest("hi", "m", voiceName = "demo", language = "zh", useRandom = true),
+        )
+        assertTrue(randomOnly.contains(""""use_random":true"""))
+        assertFalse(randomOnly.contains("use_emo_text"))
+    }
+
+    @Test
     fun `tone descriptions enable the server-side emotion classifier`() {
         val described = OpenAiSpeechTtsProvider.buildBody(
             TtsRequest("hi", "m", voiceName = "demo", language = "zh", emotion = " 难过、语速缓慢 "),

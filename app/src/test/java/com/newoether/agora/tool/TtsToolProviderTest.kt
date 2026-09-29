@@ -87,6 +87,33 @@ class TtsToolProviderTest {
     }
 
     @Test
+    fun `requests carry the configured emotion defaults`() {
+        val ctx = configured()
+
+        val plain = TtsToolProvider.buildRequest(ctx, "hi", """{"text":"hi"}""")
+        assertNull(plain.emotion)
+        assertEquals(1.0f, plain.emotionAlpha)
+        assertFalse(plain.useRandom)
+
+        val auto = TtsToolProvider.buildRequest(
+            ctx.copy(ttsEmotionAuto = true),
+            "hi",
+            """{"text":"hi"}""",
+        )
+        assertEquals("auto", auto.emotion)
+
+        val explicit = TtsToolProvider.buildRequest(
+            ctx.copy(ttsEmotionAuto = true, ttsEmotionAlpha = 0.6f, ttsEmotionRandom = true),
+            "hi",
+            """{"text":"hi","emotion":"开心"}""",
+        )
+        // The model's own tone wins over the automatic default.
+        assertEquals("开心", explicit.emotion)
+        assertEquals(0.6f, explicit.emotionAlpha)
+        assertTrue(explicit.useRandom)
+    }
+
+    @Test
     fun `spoken text and tone are parsed and trimmed from the arguments`() {
         assertEquals("你好世界", TtsToolProvider.parseText("""{"text":"  你好世界  "}"""))
         assertNull(TtsToolProvider.parseText("""{"text":"   "}"""))

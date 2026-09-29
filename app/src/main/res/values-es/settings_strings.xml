@@ -75,6 +75,13 @@
     <string name="tts_voice_upload_clone_note">Las voces clonadas se vinculan al modelo Qwen3-TTS-VC; el ajuste de modelo cambia automáticamente. DashScope cobra por cada voz creada.</string>
     <string name="tts_speak_prompt">Indicación de lectura</string>
     <string name="tts_speak_prompt_desc">Instrucciones para la herramienta de lectura del modelo. Los requisitos de tono (emotion solo en chino) se añaden automáticamente.</string>
+    <string name="tts_emotion">Control de emoción</string>
+    <string name="tts_emotion_auto">Deducir la emoción del texto</string>
+    <string name="tts_emotion_auto_desc">El servidor deduce la emoción del texto (use_emo_text); una indicación por línea tiene prioridad.</string>
+    <string name="tts_emotion_alpha">Intensidad de la emoción</string>
+    <string name="tts_emotion_alpha_desc">Intensidad del vector de emoción (emo_alpha); alrededor del 60 % o menos suena más natural.</string>
+    <string name="tts_emotion_random">Emoción aleatoria</string>
+    <string name="tts_emotion_random_desc">Elige una emoción aleatoria en cada síntesis (use_random), útil para comparar.</string>
     <string name="tts_enable_desc">Conectar un servidor compatible con IndexTTS (p. ej. IndexTTS 2.5 servido por vLLM-Omni) y leer texto en voz alta</string>
     <string name="tts_server">Servidor</string>
     <string name="tts_base_url">URL del servidor</string>

@@ -12,6 +12,9 @@ import com.newoether.agora.data.DEFAULT_CONTEXT_COMPACT_RETAIN_COUNT
 import com.newoether.agora.data.DEFAULT_CONTEXT_COMPACT_THRESHOLD_PERCENT
 import com.newoether.agora.data.DEFAULT_DYNAMIC_COLOR
 import com.newoether.agora.data.DEFAULT_LOCAL_MODEL_IDLE_RETENTION_MINUTES
+import com.newoether.agora.data.DEFAULT_TTS_EMOTION_ALPHA
+import com.newoether.agora.data.DEFAULT_TTS_EMOTION_AUTO
+import com.newoether.agora.data.DEFAULT_TTS_EMOTION_RANDOM
 import com.newoether.agora.data.DEFAULT_TTS_LANGUAGE
 import com.newoether.agora.data.DEFAULT_TTS_SPEAK_PROMPT
 import com.newoether.agora.data.DEFAULT_TTS_SPEED
@@ -180,6 +183,12 @@ class SettingsRepository(
     val ttsLanguage: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.language, DEFAULT_TTS_LANGUAGE)
     val ttsSpeed: StateFlow<Float> = hot(settingsManager.ttsPreferenceStore.speed, DEFAULT_TTS_SPEED)
     val ttsSpeakPrompt: StateFlow<String> = hot(settingsManager.ttsPreferenceStore.speakPrompt, DEFAULT_TTS_SPEAK_PROMPT)
+    val ttsEmotionAuto: StateFlow<Boolean> =
+        hot(settingsManager.ttsPreferenceStore.emotionAuto, DEFAULT_TTS_EMOTION_AUTO)
+    val ttsEmotionAlpha: StateFlow<Float> =
+        hot(settingsManager.ttsPreferenceStore.emotionAlpha, DEFAULT_TTS_EMOTION_ALPHA)
+    val ttsEmotionRandom: StateFlow<Boolean> =
+        hot(settingsManager.ttsPreferenceStore.emotionRandom, DEFAULT_TTS_EMOTION_RANDOM)
     val showDocumentationFab: StateFlow<Boolean> = hot(settingsManager.showDocumentationFab, true)
     val developerOptionsEnabled: StateFlow<Boolean> = hot(settingsManager.developerOptionsEnabled, false)
     val debugModelEnabled: StateFlow<Boolean> = hot(settingsManager.debugModelEnabled, false)
@@ -635,15 +644,6 @@ class SettingsRepository(
     fun setImageGenEnabled(enabled: Boolean) = scope.launch { settingsManager.saveImageGenEnabled(enabled) }
     fun setImageGenModel(model: String?) = scope.launch { settingsManager.saveImageGenModel(model) }
     fun setImageGenSize(size: String) = scope.launch { settingsManager.saveImageGenSize(size) }
-    fun setTtsEnabled(enabled: Boolean) = scope.launch { settingsManager.ttsPreferenceStore.saveEnabled(enabled) }
-    fun setTtsBaseUrl(url: String) = scope.launch { settingsManager.ttsPreferenceStore.saveBaseUrl(url) }
-    fun setTtsApiKey(key: String) = scope.launch { settingsManager.ttsPreferenceStore.saveApiKey(key) }
-    fun setTtsModelName(name: String) = scope.launch { settingsManager.ttsPreferenceStore.saveModelName(name) }
-    fun setTtsVoiceName(name: String) = scope.launch { settingsManager.ttsPreferenceStore.saveVoiceName(name) }
-    fun setTtsRefAudioUrl(url: String) = scope.launch { settingsManager.ttsPreferenceStore.saveRefAudioUrl(url) }
-    fun setTtsLanguage(language: String) = scope.launch { settingsManager.ttsPreferenceStore.saveLanguage(language) }
-    fun setTtsSpeed(speed: Float) = scope.launch { settingsManager.ttsPreferenceStore.saveSpeed(speed) }
-    fun setTtsSpeakPrompt(prompt: String) = scope.launch { settingsManager.ttsPreferenceStore.saveSpeakPrompt(prompt) }
     fun setShowDocumentationFab(enabled: Boolean) = scope.launch { settingsManager.saveShowDocumentationFab(enabled) }
     fun setDeveloperOptionsEnabled(enabled: Boolean) =
         scope.launch { settingsManager.saveDeveloperOptionsEnabled(enabled) }

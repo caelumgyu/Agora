@@ -89,6 +89,10 @@ data class GenerationContext(
     val ttsSpeed: Float = com.newoether.agora.data.DEFAULT_TTS_SPEED,
     /** User-editable `speak` tool description; blank falls back to the built-in prompt. */
     val ttsSpeakPrompt: String = "",
+    /** IndexTTS emotion controls: infer the emotion from the text, its strength, and randomness. */
+    val ttsEmotionAuto: Boolean = false,
+    val ttsEmotionAlpha: Float = 1.0f,
+    val ttsEmotionRandom: Boolean = false,
     val automationToolsEnabled: Boolean = false,
     /** Workers use WorkManager's foreground execution instead of starting our service. */
     val foregroundServiceManagedExternally: Boolean = false,

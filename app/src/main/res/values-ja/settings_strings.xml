@@ -75,6 +75,13 @@
     <string name="tts_voice_upload_clone_note">複製した音声は Qwen3-TTS-VC モデルに紐づき、モデル設定は自動的に切り替わります。音声の作成ごとに DashScope の料金がかかります。</string>
     <string name="tts_speak_prompt">読み上げプロンプト</string>
     <string name="tts_speak_prompt_desc">モデルの読み上げツールへの指示。トーン要件（emotion は中国語のみ）は自動で付加されます。</string>
+    <string name="tts_emotion">感情コントロール</string>
+    <string name="tts_emotion_auto">テキストから感情を自動判定</string>
+    <string name="tts_emotion_auto_desc">読み上げ前にサーバーがテキストから感情を推定します（use_emo_text）。行ごとの指定が優先されます。</string>
+    <string name="tts_emotion_alpha">感情の強さ</string>
+    <string name="tts_emotion_alpha_desc">感情ベクトルの強さ（emo_alpha）。60% 前後かそれ以下が自然です。</string>
+    <string name="tts_emotion_random">ランダムな感情</string>
+    <string name="tts_emotion_random_desc">合成のたびにランダムな感情を選びます（use_random）。聴き比べに便利です。</string>
     <string name="tts_enable_desc">IndexTTS 互換サーバーに接続（例：vLLM-Omni で提供する IndexTTS 2.5）してテキストを読み上げる</string>
     <string name="tts_server">サーバー</string>
     <string name="tts_base_url">サーバー URL</string>

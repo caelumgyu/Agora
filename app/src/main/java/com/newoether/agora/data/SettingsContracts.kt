@@ -125,6 +125,17 @@ internal fun normalizeTtsLanguage(language: String?): String =
 
 internal fun normalizeTtsSpeed(speed: Float): Float = speed.coerceIn(TTS_MIN_SPEED, TTS_MAX_SPEED)
 
+// ── IndexTTS emotion controls (use_emo_text / emo_alpha / use_random) ──────
+internal const val DEFAULT_TTS_EMOTION_AUTO = false
+internal const val TTS_MIN_EMOTION_ALPHA = 0.1f
+internal const val TTS_MAX_EMOTION_ALPHA = 1.0f
+/** Full strength by default; the docs recommend around 0.6 for text-derived emotion. */
+internal const val DEFAULT_TTS_EMOTION_ALPHA = 1.0f
+internal const val DEFAULT_TTS_EMOTION_RANDOM = false
+
+internal fun normalizeTtsEmotionAlpha(alpha: Float): Float =
+    alpha.coerceIn(TTS_MIN_EMOTION_ALPHA, TTS_MAX_EMOTION_ALPHA)
+
 internal fun decodeWebSearchApiKeys(preferences: Preferences, json: Json): Map<String, String> {
     val raw = SecretCrypto.decrypt(preferences[WEB_SEARCH_API_KEYS_JSON] ?: "{}")
     return try {
